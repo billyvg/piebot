@@ -1,0 +1,7 @@
+# ppbot - a python IRC bot #
+
+# Requirements #
+ *	irclib
+ *	sqlalchemy
+ *	postgresql (?)
+

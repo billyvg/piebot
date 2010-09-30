@@ -25,10 +25,10 @@ class Weather(Module):
         # url for wunderground's api, forecast url
         self.furl = 'http://api.wunderground.com/auto/wui/geo/ForecastXML/index.xml?query=%s'
         
-    def _register_triggers(self):
-        """Register module triggers."""
+    def _register_events(self):
+        """Register module commands."""
         
-        self.add_trigger('w')
+        self.add_command('w')
     
     def w(self, event):
         """Action to react/respond to user calls."""
@@ -37,15 +37,15 @@ class Weather(Module):
             # need to fetch the weather and parse it
             zipcode = event['args'][0]
             self.get_weather(zipcode)
+            self.get_city(zipcode)
             
             # create a nice output for the results
             fc = self.handler.forecast
             txt = self.handler.txt
-            print fc
-            print txt
-            
+            city = self.city_handler.city
+
             # stylize the message output
-            message1 = "%s - High: %sF (%sC) Low: %sF (%sC) - %s" % (zipcode, fc['1']['high']['fahrenheit'],
+            message1 = "%s (%s) - High: %sF (%sC) Low: %sF (%sC) - %s" % (city, zipcode, fc['1']['high']['fahrenheit'],
                 fc['1']['high']['celsius'], fc['1']['low']['fahrenheit'], fc['1']['low']['celsius'],
                 fc['1']['conditions'] )
             try:
@@ -62,7 +62,7 @@ class Weather(Module):
             except:
                 pass
         else:
-            self.syntax_message(event['source']['nick'], '.w <zipcode>')
+            self.syntax_message(event['nick'], '.w <zipcode>')
         
         
     def get_weather(self, zipcode):
@@ -76,6 +76,19 @@ class Weather(Module):
             parser.parse(self.furl % zipcode)
         except urllib2.URLError, e:
             print "something fucked up in weather"
+            print e
+
+    def get_city(self, zipcode):
+        """Connects to wunderground's API to parse the XML for the city."""
+
+        try:
+            #make the parser, and send the xml to be parsed
+            parser = make_parser()
+            self.city_handler = CityHandler()
+            parser.setContentHandler(self.city_handler)
+            parser.parse(self.lurl % zipcode)
+        except urllib2.URLError, e:
+            print "something fucked up looking for city"
             print e
         
 
@@ -180,3 +193,24 @@ class WeatherHandler(ContentHandler):
             self.isPeriod = False
             
         self.element = None
+
+
+class CityHandler(ContentHandler):
+    """Parses wunderground for city."""
+
+    def __init__(self):
+        self.start_city = False
+	self.city = None
+
+    def startElement(self, name, attrs):
+        if name == 'city' and self.city == None:
+            self.start_city = True
+
+    def endElement(self, name):
+        if name == 'city':
+            self.start_city = False
+
+    def characters(self, ch):
+        ch = ch.strip()
+        if self.start_city:
+            self.city = ch

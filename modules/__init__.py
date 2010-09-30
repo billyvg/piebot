@@ -2,77 +2,117 @@
 @package ppbot
 
 Module for our bot's modules.  Contains the base module class.
-
-TODO: Need some methods for user management so that modules can use decorators.
 """
+import traceback
 
 from user import *
 
 # define some decorators here, to be used by modules for access control
-def access(f, access):
-    def new_f(*args, **kwargs):
-        print 'calling %s' % f.__name__
-        print args
-        print kwargs
-        return f(*args, **kwargs)
-    return new_f
-    
-# shortcut decorators for some main access levels
-def user(f):
-    pass
+def access(*a, **kw):
+    def check_access(f, *args, **kwargs):
+        def new_f(*args, **kwargs):
+            session = Session()          
+            try:
+                # query the database to check to see if the user is a master or owner
+                query = session.query(User).filter(User.name == args[1]['nick'])
+                user = query.first()
+            except Exception, e:
+                print "query error: ", e
+            # check to see if we receive a result from the database and that
+            # their access level meets the minimum access level
+            else:
+                if user and user.access >= a[0]:
+                    return f(*args, **kwargs)
+        new_f.func_name = f.func_name
+        return new_f
+    return check_access
 
-def master(f):
-    def new_f(*args, **kwargs):
-        session = Session()
-        try:
-            # query the database to check to see if the user is a master or owner
-            query = session.query(User).filter(User.name == args[1]['source']['nick'])
-            user = query.first()
-        except Exception, e:
-            print e
-        # check to see if we receive a result from the database and that
-        # their access level is at least master status
-        if user and user.access >= Access.master.index:
-            return f(*args, **kwargs)
-    return new_f
-    
-def owner(f):
-    pass
+# shortcut decorators for some main access levels
+levels = session.query(Access).order_by(Access.access)
+
+# here's a hack to dynamically generate decorators from access levels
+# that are defined in the database.
+level_lambdas = {}
+def decorator_generator():
+    def hack(i): level_lambdas[i.access] = lambda f: access(i.id)(f)
+    return [hack(i) for i in levels]
+decorator_generator()
+for f in level_lambdas:
+    vars()[f] = level_lambdas[f]
     
 class Module:
     """The base module class where all of our modules will be derived from."""
 
     def __init__(self, server):
-        self.server = server
-        self.triggers = {}
+        #self.server = server
+        # server object from irclib
+        self.server = None
+        # events dict that is created via irclib on each irc event
+        self.events = {}
+        # dict of commands that the module has registered
+        self.commands = {}
         self.num_args = 0
-        self._register_triggers()
+        self._register_events()
+    
+    def _register_events(self):
+        """Registers an event so that the eventhandler can pass the module
+        the required data.
         
-    def add_trigger(self, trigger, action=None):
-        """Register a trigger.  
+        """
+        pass
+    
+    def add_event(self, event_type, action):
+        """Registers an event with the event handler."""
         
-        If action is None, then the default action will be the trigger name.
+        self.events[event_type] = action
         
+    def add_command(self, command, action=None, event_type='allmsg'):
+        """Register a command.  
+        
+        If action is None, then the default action will be the command name.
+        @param command      A string that will be used as the command
+        @param action       The corresponding function that will be called in the module when
+                            a command is received from IRC.
+        @param event_type   In this helper, the event_type will be the different message mediums
+                            that the bot will respond to a command.  Default: 'allmsg'
+                            Available: 'allmsg', 'privmsg', 'pubmsg', 'privnotice', 'pubnotice'
         """
         
         if not action:
-            action = trigger
-        self.triggers[trigger] = action
+            action = command
+            
+        #self.events[event_type]['commands'][command] = action 
+        self.commands[command] = action
 
-    def handle(self, event):
-        """Calls the function that a trigger was bound to."""
+    def handle(self, action, connection, event):
+        """Calls the function that a command was bound to."""
+        
+        self.server = connection
+        # set the number of arguments
+        try:
+            call_func = getattr(self, action)
+            call_func(event)
+        except:
+            # print out traceback if something wrong happens in the module
+            print traceback.print_exc()
+                
+    def handle_command(self, connection, event):
+        """Calls the function that a command was bound to."""
 
+        self.server = connection
         # set the number of arguments
         self.num_args = len(event['args'])
-
         command = event['command']
-        if command in self.triggers:
-            if hasattr(self, self.triggers[command]):
-                call_func = getattr(self, self.triggers[command])
+        if command in self.commands:
+            try:
+                call_func = getattr(self, self.commands[command])
                 call_func(event)
+            except:
+                # print out traceback if something wrong happens in the module
+                print traceback.print_exc()
 
     def syntax_message(self, target, syntax):
-        """Sends the target the correct syntax of a trigger."""
+        """Sends the target the correct syntax of a command."""
 
         message = "syntax: %s" % syntax
         self.server.notice(target, message)

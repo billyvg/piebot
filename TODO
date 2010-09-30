@@ -1,0 +1,8 @@
+TODO:
+
+	* Users/Access Control List implemented from the database.
+	* User permissions
+	* Channel configuration and permissions
+	* Configuration from the database
+	* Separation of the db from app better
+	

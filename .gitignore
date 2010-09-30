@@ -1,0 +1,7 @@
+*.pyc
+*.tmproj
+env
+build
+.DS_Store
+*.sqp
+

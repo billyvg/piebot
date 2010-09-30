@@ -1,61 +1,76 @@
-import time
+"""ppbot.py
+
+A modular python bot that utilizes/will utilize postgresql as a data source.
+
+TODO: Lots
+"""
+# database stuff
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 import irclib
-import modulehandler
-import eventhandler
+from handlers.modulehandler import ModuleHandler
+from handlers.eventhandler import EventHandler
+from models.configuration import Configuration
+from db import Db
+
+# traceback shit
+import inspect
+import traceback
+import sys
+import string
 
 #irclib.DEBUG = True
-
-# connection information, for now just have it here
-# until I think of a better place to put it
-network = 'localhost'
-port = 6667
-channel = '#test'
-nick = 'billybot'
-alt_nick = 'billybot2'
-name = 'Powered by billy'
-me = 'billy'
-trigger = "."
 
 class ppbot:
     
     def __init__ (self):
-        """ Create an IRC object and do some initializations. """
-		
+        """Create an IRC object and do some initializations.
+        Need to set handlers for events that may occur so that modules will be able to
+        use them.
+        
+        """
+    
         self.irc = irclib.IRC()
         self.server = self.irc.server()
-
+        
+        
+        # initialize the databse
+        self.engine = Db.engine
+        self.session = Db.session
+        
+        
+        # load configuration
+        self.config = Configuration()
+        self.config.session_start()
+        
         # initialize the module handler 
-        self.module_handler = modulehandler.ModuleHandler(self.server)
-        #self.event_handler = eventhandler.EventHandler(self.server)
+        self.module_handler = ModuleHandler(self.server)
+        # initialize the event handler
+        self.event_handler = EventHandler(self.server)
+        self.event_handler.module_handler = self.module_handler
+        
+        # send all events to the event handler dispatcher
+        self.irc.add_global_handler('all_events', self.event_handler.dispatcher)
         
         # load the default modules and auto-run modules
         self.load_modules()
       
-		# register handlers for irclib
-		# for now we will only be concerned with private messages and
-		# messages in the channel
-		# TODO: find a more elegant way to separate these two events, if necessary
-        self.irc.add_global_handler('privmsg', self.handle_messages)
-        self.irc.add_global_handler('pubmsg', self.handle_messages)
-		
+        
     def connect(self):
         """ Create a server object, connect and join the channel. """
-		
-		# connect to the server
-        self.server.connect(network, port, nick, ircname=name)
-        
-        # loop to keep trying to connect if we aren't connected
-        # might be a good idea to remove this completely, or 
-        # add a timer to it
-        while not self.server.is_connected():
-            continue
-        print "Connected to server -> %s." % network
-		
-		#for now just manually join a channel
-        self.server.join(channel)
 
-		# Jump into an infinite loop
+        # get configuration values
+        network = self.config.val('network')
+        port = int(self.config.val('port'))
+        nickname = self.config.val('nickname')
+        password = self.config.val('password')
+        realname = self.config.val('realname')
+
+        # connect to the server
+        self.server.connect(network, port, nickname, password, ircname=realname)
+
+        # jump into an infinite loop
         self.irc.process_forever()
 		
     def load_modules(self):
@@ -63,18 +78,16 @@ class ppbot:
         call the database for what modules to auto-load
             
         """
-	    
-        self.module_handler.load('Irc')
-        self.module_handler.load('Weather')
+        
         core = self.module_handler.load('Core')
         core.module_handler = self.module_handler
-		
-	# Event Handlers
-	# Private messages and channel messages
-    def handle_messages(self, connection, event):
-        if event.arguments()[0].split(' ')[0][0] == trigger:
-            self.module_handler.message_handler(connection, event)
-				
+        
+        self.module_handler.load('Irc')
+        self.module_handler.load('Weather')
+        #self.module_handler.load('Aion')
+        self.module_handler.load('Urlparser')
+   		
+
 if __name__ == "__main__":
     bot = ppbot()
     bot.connect()

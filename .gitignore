@@ -3,5 +3,5 @@
 env
 build
 .DS_Store
-*.sqp
+*.swp
 

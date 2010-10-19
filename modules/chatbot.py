@@ -1,7 +1,11 @@
 from modules import *
 
-import mh_python
 import re
+
+try:
+    import mh_python
+except:
+    raise("You need the megaHAL for python installed.")
 
 
 class Chatbot(Module):

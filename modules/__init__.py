@@ -4,6 +4,7 @@
 Module for our bot's modules.  Contains the base module class.
 """
 import traceback
+from db import Db
 
 from user import *
 
@@ -11,7 +12,7 @@ from user import *
 def access(*a, **kw):
     def check_access(f, *args, **kwargs):
         def new_f(*args, **kwargs):
-            session = Session()          
+            session = Db.session          
             try:
                 # query the database to check to see if the user is a master or owner
                 query = session.query(User).filter(User.name == args[1]['nick'])
@@ -40,20 +41,43 @@ decorator_generator()
 for f in level_lambdas:
     vars()[f] = level_lambdas[f]
     
+    
+def command(f):
+    """Decorator to add the method as a command."""
+    def new(*args, **kwargs):
+        module = getattr(sys.modules[f.__module__], 'Module')
+        print Module.commands
+        print args
+        print kwargs
+        print dir(f)
+        return f(*args, **kwargs)
+    print f
+    return new
+    #print dir(module)
+    #add_command = getattr(module, 'add_command')
+    #add_command(module, f.__name__)
+    #print module
+    #print f.__name__
+    #module.commands[f.__name__] = f.__name__
+    #module.add_command(f.__name__)
+    #return f
+    
 class Module:
     """The base module class where all of our modules will be derived from."""
+    #commands = {}
+    
 
+        
     def __init__(self, server):
         #self.server = server
         # server object from irclib
-        self.server = None
         # events dict that is created via irclib on each irc event
         self.events = {}
         # dict of commands that the module has registered
         self.commands = {}
         self.num_args = 0
         self._register_events()
-    
+        
     def _register_events(self):
         """Registers an event so that the eventhandler can pass the module
         the required data.
@@ -68,7 +92,7 @@ class Module:
         
     def add_command(self, command, action=None, event_type='allmsg'):
         """Register a command.  
-        
+
         If action is None, then the default action will be the command name.
         @param command      A string that will be used as the command
         @param action       The corresponding function that will be called in the module when
@@ -77,18 +101,19 @@ class Module:
                             that the bot will respond to a command.  Default: 'allmsg'
                             Available: 'allmsg', 'privmsg', 'pubmsg', 'privnotice', 'pubnotice'
         """
-        
+
         if not action:
             action = command
-            
-        #self.events[event_type]['commands'][command] = action 
-        self.commands[command] = action
 
-    def handle(self, action, connection, event):
+        self.commands[command] = action
+        
+    def handle(self, action, event):
         """Calls the function that a command was bound to."""
         
-        self.server = connection
+        self.server = event['connection']
         # set the number of arguments
+        self.num_args = event['num_args']
+
         try:
             call_func = getattr(self, action)
             call_func(event)
@@ -96,20 +121,20 @@ class Module:
             # print out traceback if something wrong happens in the module
             print traceback.print_exc()
                 
-    def handle_command(self, connection, event):
+    def handle_command(self, event):
         """Calls the function that a command was bound to."""
-
-        self.server = connection
+        
+        self.server = event['connection']
         # set the number of arguments
-        self.num_args = len(event['args'])
+        self.num_args = event['num_args']
         command = event['command']
-        if command in self.commands:
-            try:
-                call_func = getattr(self, self.commands[command])
-                call_func(event)
-            except:
-                # print out traceback if something wrong happens in the module
-                print traceback.print_exc()
+        
+        try:
+            call_func = getattr(self, self.commands[command])
+            call_func(event)
+        except:
+            # print out traceback if something wrong happens in the module
+            print traceback.print_exc()
 
     def syntax_message(self, target, syntax):
         """Sends the target the correct syntax of a command."""

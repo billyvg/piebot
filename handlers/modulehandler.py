@@ -7,6 +7,7 @@ import inspect
 import traceback
 import sys
 
+from modules import Module
 from handlers import Handler
 
 class ModuleHandler(Handler):
@@ -58,7 +59,7 @@ class ModuleHandler(Handler):
             # so that the message handler knows how to route the commnands
             for command, action in module.commands.iteritems():
                 # define a commands dict that has a key of the command name and 
-                # value of the name of the module that holds the command
+                # value of the name of the x that holds the command
                 self.commands[command] = name
                 
             # also do something similar for events

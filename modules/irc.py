@@ -25,6 +25,15 @@ class Irc(Module):
         self.add_command('topic')
         self.add_command('unban')
         self.add_command('voice')
+        self.add_command('debug')
+        self.add_command('python')
+        
+    def debug(self, event):
+        print self.commands
+        print self.modules
+        
+    def python(self, event):
+        self.msg(event['target'], 'hi')
         
     @op
     def ban(self, event):
@@ -105,7 +114,7 @@ class Irc(Module):
         else:
             self.syntax_message(event['nick'], '.msg [nick/channel] <message>')
 
-    @master       
+    @command
     def nick(self, event):
         """Changes the bot's nickname."""
 

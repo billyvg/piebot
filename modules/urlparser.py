@@ -23,18 +23,18 @@ class Urlparser(Module):
         self.add_event('pubmsg', 'parse_message')
         
     def parse_message(self, event):
-        nick = event.source().split('!')[0]
+        print 'url parsing started'
+        nick = event['nick']
         #print irclib.mask_matches(event.source(), '*!*@masturbated.net')
         try:
-            m = self.url_pattern.search(event.arguments()[0])
+            m = self.url_pattern.search(event['args'])
             if m:
-                #print 'url found'
                 try:
                     short_url = self.get_short_url(m.group(0))
                 except:
                     print "short url fail: %s" % m.group(0)
                 try:
-                    self.server.privmsg(event.target(), "%s .::. %s" % (short_url, self.get_url_title(m.group(0))))
+                    self.server.privmsg(event['target'], "%s .:. %s" % (short_url, self.get_url_title(m.group(0))))
                 except:
                     print "prob with url parser: %s" % m.group(0)
                     print traceback.print_exc()

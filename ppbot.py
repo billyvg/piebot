@@ -44,7 +44,7 @@ class ppbot:
         self.config = Configuration()
         self.config.session_start()
         
-        # initialize the module handler 
+        # initialize the module handler
         self.module_handler = ModuleHandler(self.server)
         # initialize the event handler
         self.event_handler = EventHandler(self.server)
@@ -69,7 +69,6 @@ class ppbot:
 
         # connect to the server
         self.server.connect(network, port, nickname, password, ircname=realname)
-
         # jump into an infinite loop
         self.irc.process_forever()
 		
@@ -81,12 +80,12 @@ class ppbot:
         
         core = self.module_handler.load('Core')
         core.module_handler = self.module_handler
-        
+
         self.module_handler.load('Irc')
         self.module_handler.load('Weather')
         #self.module_handler.load('Aion')
         self.module_handler.load('Urlparser')
-   		
+        self.module_handler.load('Chatbot')
 
 if __name__ == "__main__":
     bot = ppbot()

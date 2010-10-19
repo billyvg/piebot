@@ -56,17 +56,19 @@ class EventHandler(Handler):
             'pubnotice'
         ]
         
+        parsed_event = self.parse_event(event, connection)
+        
         if event.eventtype() in allmsgs:
-            self.message_handler(connection, event)
-
+            self.message_handler(parsed_event)
+            
         try:
             # look through the events dict in the modulehandler class 
             for action, module in self.module_handler.events[event.eventtype()].iteritems():
-                self.module_handler.modules[module].handle(action, connection, event)
+                self.module_handler.modules[module].handle(action, parsed_event)
         except:
             pass
-        
-    def message_handler(self, connection, event):
+            
+    def message_handler(self, event):
         """Handles incoming messages, parses them before sending to a 
         module.
         
@@ -74,39 +76,13 @@ class EventHandler(Handler):
         @param an irclib event
         
         """
-        module_args = {}
-        #source = {}
-        # parse the event
-        # target is who (private message) or what (channel) the event is directed towards
-        target = event.target()
-        # source is where the event came from
-        source = event.source()
-        # the nickname of the person who sent the message
-        #source['nick'] = the_source.split('!')[0]
-        #source['ident'] = the_source.split('!')[1].split('@')[0]
-        #source['hostname'] = the_source.split('!')[1].split('@')[1]
-
-        # get the entire message and split it by spaces
-        args = event.arguments()[0].strip().split(' ')
-        # this is the first part of the message, which will be the command
-        cmd = args.pop(0)[1:]
-        # the number of arguments -- the rest of the message string after the command
-        num_args = len(args)
-
-        # make a dictionary for all the arguments we send to the module's handle method
-        module_args['command'] = cmd
-        module_args['args'] = args
-        module_args['target'] = target
-        module_args['source'] = source
-        module_args['nick'] = source.split('!')[0]
-        module_args['connection'] = connection
-                
+                        
         # check to see if a command was called
-        called_module = self.command(cmd)
-        try: 
-            if self.module_handler.commands[cmd]:
-                self.module_handler.modules[self.module_handler.commands[cmd]].handle_command(connection, module_args)
+        called_module = self.command(event['command'])
+        try:
+            self.module_handler.modules[self.module_handler.commands[event['command']]].handle_command(event)
         except:
+            print traceback.print_exc()
             pass
             
     def command(self, command):
@@ -115,8 +91,44 @@ class EventHandler(Handler):
         @param the command string
         
         """
-        
-        if command in self.module_handler.commands:
+
+        try:
             return self.module_handler.commands[command]
-        else:
+        except:
             return None
+            
+    def parse_event(self, event, connection):
+        """Parses irclib's event object into something more usable."""
+        
+        module_args = {}
+        # target is who (private message) or what (channel) the event is directed towards
+        target = event.target()
+        
+        # source is where the event came from
+        source = event.source()
+
+        # get the entire message and split it by spaces
+        try:
+            args = event.arguments()[0].strip().split(' ')
+            cmd = args.pop(0)[1:]
+            num_args = len(args)
+        except:
+            args = ''
+            cmd = ''
+            num_args = 0
+        
+        # this is the first part of the message, which will be the command
+        
+        # the number of arguments -- the rest of the message string after the command
+
+        # make a dictionary for all the arguments we send to the module's handle method
+        module_args['command'] = cmd
+        module_args['args'] = args
+        module_args['target'] = target
+        module_args['source'] = source
+        module_args['nick'] = source.split('!')[0]
+        module_args['connection'] = connection
+        module_args['eventtype'] = event.eventtype()
+        module_args['num_args'] = num_args
+        
+        return module_args

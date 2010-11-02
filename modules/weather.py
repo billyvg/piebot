@@ -8,8 +8,8 @@ Will be using wunderground.com's API.
 
 """
 import urllib2
-from xml.sax import make_parser
-from xml.sax.handler import ContentHandler
+import string
+from xml.dom.minidom import parseString
 
 from modules import *
 
@@ -20,10 +20,8 @@ class Weather(Module):
         
         Module.__init__(self, server)
         
-        # url for wunderground's api, location url
-        self.lurl = 'http://api.wunderground.com/auto/wui/geo/GeoLookupXML/index.xml?query=%s'
         # url for wunderground's api, forecast url
-        self.furl = 'http://api.wunderground.com/auto/wui/geo/ForecastXML/index.xml?query=%s'
+        self.wurl = 'http://www.google.com/ig/api?weather=%s'
         
     def _register_events(self):
         """Register module commands."""
@@ -36,181 +34,54 @@ class Weather(Module):
         if self.num_args == 1:
             # need to fetch the weather and parse it
             zipcode = event['args'][0]
-            self.get_weather(zipcode)
-            self.get_city(zipcode)
+            weather = self.get_weather(zipcode)
             
-            # create a nice output for the results
-            fc = self.handler.forecast
-            txt = self.handler.txt
-            city = self.city_handler.city
-
             # stylize the message output
-            message1 = "%s (%s) - High: %sF (%sC) Low: %sF (%sC) - %s" % (city, zipcode, fc['1']['high']['fahrenheit'],
-                fc['1']['high']['celsius'], fc['1']['low']['fahrenheit'], fc['1']['low']['celsius'],
-                fc['1']['conditions'] )
-            try:
-                message2 = "%s: %s" % (txt['1']['title'], txt['1']['fcttext'])
-                message3 = "%s: %s" % (txt['2']['title'], txt['2']['fcttext'])
-            except:
-                pass
-                
+            message1 = "%(city)s (%(zipcode)s) - Currently: %(temp_f)sF (%(temp_c)sC) - Conditions: %(condition)s, %(humidity)s, %(wind)s" % (weather)
+            message2 = "Today (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][0]
+            message3 = "Tomorrow (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][1]
             # send the messages
             self.msg(event['target'], message1)
-            try:
-                self.msg(event['target'], message2)
-                self.msg(event['target'], message3)
-            except:
-                pass
+            self.msg(event['target'], message2)
+            self.msg(event['target'], message3)
         else:
             self.syntax_message(event['nick'], '.w <zipcode>')
         
         
     def get_weather(self, zipcode):
-        """Connects to wunderground's API and parses the receiving XML for the weather."""
+        """Connects to google's secret weather API and parses the receiving XML for the weather."""
         
         try:
             # make the parser, and send the xml to be parsed
-            parser = make_parser()
-            self.handler = WeatherHandler()
-            parser.setContentHandler(self.handler)
-            parser.parse(self.furl % zipcode)
+            xml = urllib2.urlopen(self.wurl % zipcode).read()
+            xml = string.replace(xml, '<?xml version="1.0"?>', '')
+            dom = parseString(xml)
+            weather = {}
+            forecast = []
+
+            forecast_information = dom.getElementsByTagName('forecast_information')[0]
+            current_conditions = dom.getElementsByTagName('current_conditions')[0]
+            forecast_conditions = dom.getElementsByTagName('forecast_conditions')
+
+            weather['city'] = forecast_information.getElementsByTagName('city')[0].getAttribute('data')
+            weather['zipcode'] = forecast_information.getElementsByTagName('postal_code')[0].getAttribute('data')
+            weather['condition'] = current_conditions.getElementsByTagName('condition')[0].getAttribute('data')
+            weather['wind'] = current_conditions.getElementsByTagName('wind_condition')[0].getAttribute('data')
+            weather['humidity'] = current_conditions.getElementsByTagName('humidity')[0].getAttribute('data')
+            weather['temp_f'] = current_conditions.getElementsByTagName('temp_f')[0].getAttribute('data')
+            weather['temp_c'] = current_conditions.getElementsByTagName('temp_c')[0].getAttribute('data')
+
+            for x in forecast_conditions:
+                fc_temp = {}
+                fc_temp['day'] = x.getElementsByTagName('day_of_week')[0].getAttribute('data') 
+                fc_temp['low'] = x.getElementsByTagName('low')[0].getAttribute('data') 
+                fc_temp['high'] = x.getElementsByTagName('high')[0].getAttribute('data') 
+                fc_temp['condition'] = x.getElementsByTagName('condition')[0].getAttribute('data') 
+                forecast.append(fc_temp)
+
+            weather['forecast'] = forecast
+            return weather
+
         except urllib2.URLError, e:
-            print "something fucked up in weather"
-            print e
-
-    def get_city(self, zipcode):
-        """Connects to wunderground's API to parse the XML for the city."""
-
-        try:
-            #make the parser, and send the xml to be parsed
-            parser = make_parser()
-            self.city_handler = CityHandler()
-            parser.setContentHandler(self.city_handler)
-            parser.parse(self.lurl % zipcode)
-        except urllib2.URLError, e:
-            print "something fucked up looking for city"
-            print e
-        
-
-class WeatherHandler(ContentHandler):
-    """ContentHandler for wunderground's XML API."""
-    
-    def __init__(self):
-        # current element
-        self.element = None
-        self.elementData = None
-        
-        # txt_forecast, to get the description of the weather
-        self.txt_forecast = False
-        # simpleforecast flag, to get the forecast numbers
-        self.simpleforecast = False
-        self.high = False
-        self.low = False
-        self.isPeriod = False
-        self.period = None
-        
-        self.data = {}
-        self.txt = {}
-        self.forecast = {}
-        
-    def startElement(self, name, attrs):
-        
-        # if statements for the different flags we need to track
-        if name == 'txt_forecast':
-            self.txt_forecast = True
-        
-        if name == 'simpleforecast':
-            self.simpleforecast = True
-        
-        if name == 'high':
-            self.high = True
-        if name == 'low':
-            self.low = True
-                
-        if name == 'period':
-            self.isPeriod = True
-            
-        self.element = name
-        
-    def characters(self, ch):
-        ch = ch.strip()
-        self.elementData = ch
-        self.data[self.element] = ch
-
-        # get the period number
-        if self.isPeriod:
-            self.period = ch
-            
-        # parse for the title and forecast txt
-        if self.txt_forecast:
-            if self.period:
-                try:
-                    self.txt[self.period][self.element] = ch
-                except:
-                    self.txt[self.period] = {}
-                    
-        # parse for the forecasts
-        if self.simpleforecast and ch:
-            # make sure a period is set
-            if self.period:
-                # see if we're looking for the high temps
-                if self.high:
-                    try:
-                        self.forecast[self.period]['high'][self.element] = ch
-                    except:
-                        self.forecast[self.period]['high'] = {}
-                        self.forecast[self.period]['high'][self.element] = ch
-                # the low temps
-                if self.low:
-                    try:
-                        self.forecast[self.period]['low'][self.element] = ch
-                    except:
-                        self.forecast[self.period]['low'] = {}
-                        self.forecast[self.period]['low'][self.element] = ch
-                # every other element in the simpleforecast tree
-                else:
-                    try:
-                        self.forecast[self.period][self.element] = ch
-                    except:
-                        self.forecast[self.period] = {}
-                        self.forecast[self.period][self.element] = ch
-        
-    def endElement(self, name):
-        
-        # reverse the flags at the end of an element
-        if name == 'txt_forecast':
-            self.txt_forecast = False
-        
-        if name == 'simpleforecast':
-            self.simpleforecast = False
-            
-        if name == 'high':
-            self.high = False
-        if name == 'low':
-            self.low = False
-            
-        if name == 'period':
-            self.isPeriod = False
-            
-        self.element = None
-
-
-class CityHandler(ContentHandler):
-    """Parses wunderground for city."""
-
-    def __init__(self):
-        self.start_city = False
-	self.city = None
-
-    def startElement(self, name, attrs):
-        if name == 'city' and self.city == None:
-            self.start_city = True
-
-    def endElement(self, name):
-        if name == 'city':
-            self.start_city = False
-
-    def characters(self, ch):
-        ch = ch.strip()
-        if self.start_city:
-            self.city = ch
+            self.msg(event['target'], 'Could not get weather data for %s' % zipcode)
+            print "something fucked connecting to weather api. : %s" % e

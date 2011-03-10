@@ -28,9 +28,9 @@ class Chatbot(Module):
         TODO: Do we want to add text when people are talking to the bot?
 
         """
-        
+
         bot_nick = self.server.get_nickname()
-        message = ' '.join(event['args'])
+        message = event['message']
         
         # check if the bot's name was used
         m = re.search(bot_nick, message)
@@ -39,7 +39,7 @@ class Chatbot(Module):
             message = re.sub(bot_nick, '', message)
             
             # get the megaHAL reply
-            reply = mh_python.doreply(message)
+            reply = "%s, %s" % (event['nick'], mh_python.doreply(message))
             self.msg(event['target'], reply)
             
         self.learn_message(message)

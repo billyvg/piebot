@@ -65,8 +65,6 @@ def command(f):
 class Module:
     """The base module class where all of our modules will be derived from."""
     #commands = {}
-    
-
         
     def __init__(self, server):
         #self.server = server

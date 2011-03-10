@@ -1,6 +1,6 @@
 from modules import *
 
-channel = ['#battlegroup9']
+channel = ['#nurfed_x', "#briarcliff"]
 
 class Core(Module):
     """Core Module to provide chat commands for core functionality of 

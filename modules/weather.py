@@ -34,16 +34,19 @@ class Weather(Module):
         if self.num_args == 1:
             # need to fetch the weather and parse it
             zipcode = event['args'][0]
-            weather = self.get_weather(zipcode)
-            
-            # stylize the message output
-            message1 = "%(city)s (%(zipcode)s) - Currently: %(temp_f)sF (%(temp_c)sC) - Conditions: %(condition)s, %(humidity)s, %(wind)s" % (weather)
-            message2 = "Today (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][0]
-            message3 = "Tomorrow (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][1]
-            # send the messages
-            self.msg(event['target'], message1)
-            self.msg(event['target'], message2)
-            self.msg(event['target'], message3)
+            try:
+                weather = self.get_weather(zipcode)
+                # stylize the message output
+                message1 = "%(city)s (%(zipcode)s) - Currently: %(temp_f)sF (%(temp_c)sC) - Conditions: %(condition)s, %(humidity)s, %(wind)s" % (weather)
+                message2 = "Today (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][0]
+                message3 = "Tomorrow (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][1]
+                # send the messages
+                self.msg(event['target'], message1)
+                self.msg(event['target'], message2)
+                self.msg(event['target'], message3)
+            except:
+                self.msg(event['target'], 'Could not get weather data for "%s"' % zipcode)
+                print "something fucked connecting to weather api. : %s" % zipcode
         else:
             self.syntax_message(event['nick'], '.w <zipcode>')
         
@@ -51,37 +54,32 @@ class Weather(Module):
     def get_weather(self, zipcode):
         """Connects to google's secret weather API and parses the receiving XML for the weather."""
         
-        try:
-            # make the parser, and send the xml to be parsed
-            xml = urllib2.urlopen(self.wurl % zipcode).read()
-            xml = string.replace(xml, '<?xml version="1.0"?>', '')
-            dom = parseString(xml)
-            weather = {}
-            forecast = []
+        # make the parser, and send the xml to be parsed
+        xml = urllib2.urlopen(self.wurl % zipcode).read()
+        xml = string.replace(xml, '<?xml version="1.0"?>', '')
+        dom = parseString(xml)
+        weather = {}
+        forecast = []
 
-            forecast_information = dom.getElementsByTagName('forecast_information')[0]
-            current_conditions = dom.getElementsByTagName('current_conditions')[0]
-            forecast_conditions = dom.getElementsByTagName('forecast_conditions')
+        forecast_information = dom.getElementsByTagName('forecast_information')[0]
+        current_conditions = dom.getElementsByTagName('current_conditions')[0]
+        forecast_conditions = dom.getElementsByTagName('forecast_conditions')
 
-            weather['city'] = forecast_information.getElementsByTagName('city')[0].getAttribute('data')
-            weather['zipcode'] = forecast_information.getElementsByTagName('postal_code')[0].getAttribute('data')
-            weather['condition'] = current_conditions.getElementsByTagName('condition')[0].getAttribute('data')
-            weather['wind'] = current_conditions.getElementsByTagName('wind_condition')[0].getAttribute('data')
-            weather['humidity'] = current_conditions.getElementsByTagName('humidity')[0].getAttribute('data')
-            weather['temp_f'] = current_conditions.getElementsByTagName('temp_f')[0].getAttribute('data')
-            weather['temp_c'] = current_conditions.getElementsByTagName('temp_c')[0].getAttribute('data')
+        weather['city'] = forecast_information.getElementsByTagName('city')[0].getAttribute('data')
+        weather['zipcode'] = forecast_information.getElementsByTagName('postal_code')[0].getAttribute('data')
+        weather['condition'] = current_conditions.getElementsByTagName('condition')[0].getAttribute('data')
+        weather['wind'] = current_conditions.getElementsByTagName('wind_condition')[0].getAttribute('data')
+        weather['humidity'] = current_conditions.getElementsByTagName('humidity')[0].getAttribute('data')
+        weather['temp_f'] = current_conditions.getElementsByTagName('temp_f')[0].getAttribute('data')
+        weather['temp_c'] = current_conditions.getElementsByTagName('temp_c')[0].getAttribute('data')
 
-            for x in forecast_conditions:
-                fc_temp = {}
-                fc_temp['day'] = x.getElementsByTagName('day_of_week')[0].getAttribute('data') 
-                fc_temp['low'] = x.getElementsByTagName('low')[0].getAttribute('data') 
-                fc_temp['high'] = x.getElementsByTagName('high')[0].getAttribute('data') 
-                fc_temp['condition'] = x.getElementsByTagName('condition')[0].getAttribute('data') 
-                forecast.append(fc_temp)
+        for x in forecast_conditions:
+            fc_temp = {}
+            fc_temp['day'] = x.getElementsByTagName('day_of_week')[0].getAttribute('data') 
+            fc_temp['low'] = x.getElementsByTagName('low')[0].getAttribute('data') 
+            fc_temp['high'] = x.getElementsByTagName('high')[0].getAttribute('data') 
+            fc_temp['condition'] = x.getElementsByTagName('condition')[0].getAttribute('data') 
+            forecast.append(fc_temp)
 
-            weather['forecast'] = forecast
-            return weather
-
-        except urllib2.URLError, e:
-            self.msg(event['target'], 'Could not get weather data for %s' % zipcode)
-            print "something fucked connecting to weather api. : %s" % e
+        weather['forecast'] = forecast
+        return weather

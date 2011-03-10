@@ -2,6 +2,7 @@ from modules import *
 
 import re, htmlentitydefs
 import urllib2
+import string
 try:
 	import simplejson as json
 except ImportError:
@@ -17,22 +18,22 @@ class Urlparser(Module):
 	    """Constructor."""
 	    
 	    Module.__init__(self, server)
-	    self.url_pattern = re.compile('http://(.*)')
+	    self.url_pattern = re.compile('http://([^ ]+)')
         
     def _register_events(self):
         self.add_event('pubmsg', 'parse_message')
         
     def parse_message(self, event):
-        print 'url parsing started'
         nick = event['nick']
-        #print irclib.mask_matches(event.source(), '*!*@masturbated.net')
         try:
-            m = self.url_pattern.search(event['args'])
+            m = self.url_pattern.search(event['message'])
             if m:
                 try:
                     short_url = self.get_short_url(m.group(0))
                 except:
                     print "short url fail: %s" % m.group(0)
+                    print traceback.print_exc()
+
                 try:
                     self.server.privmsg(event['target'], "%s .:. %s" % (short_url, self.get_url_title(m.group(0))))
                 except:
@@ -40,6 +41,7 @@ class Urlparser(Module):
                     print traceback.print_exc()
         except:
             print "prob a 0 char message in IRC"
+            print traceback.print_exc()
     
     def get_url_title(self, url):
         """Connects to a URL and grabs the site title"""
@@ -52,10 +54,6 @@ class Urlparser(Module):
         m = re.search(regex, page, re.S)
         if m:
             return ' '.join(self.unescape(m.group(1)).split())
-        #t = page.split('<title>')[1]
-        #title = t.split('</title>')[0]
-        #if title:
-        #    return title
         else:
             return "<No Title>"
 

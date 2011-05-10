@@ -6,14 +6,14 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
-from configuration import Configuration
+#from models.configuration import Configuration
 
 class Db:
     """
     Initializes the database
     
     """
-    engine = create_engine('postgres://ppbot:ppb0t@localhost:5433/ppbot')
+    engine = create_engine('postgresql://ppbot:ppb0t@localhost:5432/ppbot')
     sess = sessionmaker(bind=engine)
     session = sess()
     
@@ -62,15 +62,16 @@ class Db:
             Column('autoload', Integer)
         )
         metadata.create_all(self.engine)
-        self.session.add_all([
-            Configuration('network', 'localhost', 'The name of the network to connect to. (temp. )'),
-            Configuration('port', '6667', 'The port of the IRC server.'),
-            Configuration('nickname', 'ppbot', 'The nickname that the bot should use.'),
-            Configuration('password', '', 'The password for a server if necessary'),
-            Configuration('alt_nickname', 'ppbot_', 'An alternate nickname the bot should use if the primary is in use.'),
-            Configuration('realname', 'Powered by billy', 'The "real name" field displayed on /whois.'),
-            Configuration('me', 'billy', 'lol...'),
-            Configuration('trigger', '.', 'The trigger that the bot should respond to.'),
-        ])
 
+#        self.session.add_all([
+#            Configuration('network', 'localhost', 'The name of the network to connect to. (temp. )'),
+#            Configuration('port', '6667', 'The port of the IRC server.'),
+#            Configuration('nickname', 'ppbot', 'The nickname that the bot should use.'),
+#            Configuration('password', '', 'The password for a server if necessary'),
+#            Configuration('alt_nickname', 'ppbot_', 'An alternate nickname the bot should use if the primary is in use.'),
+#            Configuration('realname', 'Powered by billy', 'The "real name" field displayed on /whois.'),
+#            Configuration('me', 'billy', 'lol...'),
+#            Configuration('trigger', '.', 'The trigger that the bot should respond to.'),
+#        ])
+#
         self.session.close()

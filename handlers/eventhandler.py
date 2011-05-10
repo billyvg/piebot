@@ -82,7 +82,6 @@ class EventHandler(Handler):
         try:
             self.module_handler.modules[self.module_handler.commands[event['command']]].handle_command(event)
         except:
-            print traceback.print_exc()
             pass
             
     def command(self, command):
@@ -106,16 +105,20 @@ class EventHandler(Handler):
         
         # source is where the event came from
         source = event.source()
-
+        
         # get the entire message and split it by spaces
         try:
+            message = ' '.join(event.arguments())
             args = event.arguments()[0].strip().split(' ')
             cmd = args.pop(0)[1:]
             num_args = len(args)
         except:
+            message = ''
             args = ''
             cmd = ''
             num_args = 0
+            #print traceback.print_exc()
+
         
         # this is the first part of the message, which will be the command
         
@@ -124,9 +127,14 @@ class EventHandler(Handler):
         # make a dictionary for all the arguments we send to the module's handle method
         module_args['command'] = cmd
         module_args['args'] = args
+        module_args['message'] = message 
         module_args['target'] = target
         module_args['source'] = source
-        module_args['nick'] = source.split('!')[0]
+
+        try:
+            module_args['nick'] = source.split('!')[0]
+        except:
+            pass
         module_args['connection'] = connection
         module_args['eventtype'] = event.eventtype()
         module_args['num_args'] = num_args

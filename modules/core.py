@@ -1,5 +1,4 @@
 from modules import *
-
 channel = ['#nurfed_x', "#briarcliff"]
 
 class Core(Module):
@@ -83,8 +82,8 @@ class Core(Module):
     def welcome(self, event):
         """Event handler for when the bot connects to a server."""
         
-        print "Connected to server."
+        print "Connected to network: %s." % self.server.server_config.name
         
-    	for chan in channel:
-    	    self.server.join(chan)
+    	for channel in self.server.server_config.channels:
+    	    self.server.join(channel.name)
         

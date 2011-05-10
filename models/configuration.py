@@ -24,8 +24,6 @@ class Configuration(Base, Model):
     value = Column(String, nullable=False)
     
     def __init__(self, name=None, value=None, description=None, **kwargs):
-        #super(Model, self).__init__()
-        #super(Base, self).__init__()
         Model.__init__(self)
         Base.__init__(self)
     	self.name = name
@@ -59,14 +57,14 @@ class Configuration(Base, Model):
 
         # should do this elsewhere
         self.session.add_all([
-            Configuration('network', 'localhost', 'The name of the network to connect to. (temp. )'),
+            Configuration('network', 'irc.gamesurge.net', 'The name of the network to connect to. (temp. )'),
             Configuration('port', '6667', 'The port of the IRC server.'),
-            Configuration('nickname', 'ppbot', 'The nickname that the bot should use.'),
+            Configuration('nickname', 'dongbot', 'The nickname that the bot should use.'),
             Configuration('password', '', 'The password for a server if necessary'),
-            Configuration('alt_nickname', 'ppbot_', 'An alternate nickname the bot should use if the primary is in use.'),
+            Configuration('alt_nickname', 'dongbot_', 'An alternate nickname the bot should use if the primary is in use.'),
             Configuration('realname', 'Powered by billy', 'The "real name" field displayed on /whois.'),
             Configuration('me', 'billy', 'lol...'),
             Configuration('trigger', '.', 'The trigger that the bot should respond to.'),
         ])
-
+        #self.session.commit()
         self.session.close()

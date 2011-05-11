@@ -96,6 +96,7 @@ class ppbot:
         self.module_handler.load('Urlparser')
         #self.module_handler.load('Chatbot')
         self.module_handler.load('Riftstatus')
+        self.module_handler.load('Git')
 
 if __name__ == "__main__":
     bot = ppbot()

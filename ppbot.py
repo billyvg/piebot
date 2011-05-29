@@ -94,9 +94,10 @@ class ppbot:
         self.module_handler.load('Irc')
         self.module_handler.load('Weather')
         self.module_handler.load('Urlparser')
+        self.module_handler.load('Stock')
         #self.module_handler.load('Chatbot')
-        self.module_handler.load('Riftstatus')
-        self.module_handler.load('Git')
+        #self.module_handler.load('Riftstatus')
+        #self.module_handler.load('Git')
 
 if __name__ == "__main__":
     bot = ppbot()

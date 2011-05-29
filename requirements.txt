@@ -1,0 +1,6 @@
+ppbot
+SQLAlchemy==0.6.7
+pika==0.9.5
+psycopg2==2.4.1
+python-irclib==0.4.6
+wsgiref==0.1.2

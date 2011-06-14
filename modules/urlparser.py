@@ -54,7 +54,7 @@ class Urlparser(Module):
         regex = '<title[^>]*>(.*?)</title>'
         m = re.search(regex, page, re.S)
         if m:
-            return ' '.join(self.unescape(m.group(1)).split())
+            return ' '.join(self.unescape(m.group(1)).split()).encode('ascii', 'ignore')
         else:
             return "<No Title>"
 
@@ -82,18 +82,15 @@ class Urlparser(Module):
             text = m.group(0)
             if text[:2] == "&#":
                 # character reference
-                try:
-                    if text[:3] == "&#x":
-                        return unichr(int(text[3:-1], 16))
-                    else:
-                        return unichr(int(text[2:-1]))
-                except ValueError:
-                    pass
+                if text[:3] == "&#x":
+                    return unichr(int(text[3:-1], 16))
+                else:
+                    return unichr(int(text[2:-1]))
             else:
                 # named entity
                 try:
                     text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
-                except KeyError:
+                except:
                     pass
             return text # leave as is
         return re.sub("&#?\w+;", fixup, text)

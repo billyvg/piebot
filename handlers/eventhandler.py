@@ -24,6 +24,7 @@ import inspect
 import traceback
 import sys
 
+from models.configuration import Configuration
 from handlers import Handler
 
 class EventHandler(Handler):
@@ -77,12 +78,16 @@ class EventHandler(Handler):
         
         """
                         
+        config = Configuration()
+        trigger = config.val("trigger")
+
         # check to see if a command was called
-        called_module = self.command(event['command'])
-        try:
-            self.module_handler.modules[self.module_handler.commands[event['command']]].handle_command(event)
-        except:
-            pass
+        if trigger == event['trigger']:
+            called_module = self.command(event['command'])
+            try:
+                self.module_handler.modules[self.module_handler.commands[event['command']]].handle_command(event)
+            except:
+                pass
             
     def command(self, command):
         """Checks if a command is mapped in the command dictionary.
@@ -110,9 +115,11 @@ class EventHandler(Handler):
         try:
             message = ' '.join(event.arguments())
             args = event.arguments()[0].strip().split(' ')
+            trigger = args[0][0]
             cmd = args.pop(0)[1:]
             num_args = len(args)
         except:
+            trigger = ''
             message = ''
             args = ''
             cmd = ''
@@ -126,6 +133,7 @@ class EventHandler(Handler):
 
         # make a dictionary for all the arguments we send to the module's handle method
         module_args['command'] = cmd
+        module_args['trigger'] = trigger
         module_args['args'] = args
         module_args['message'] = message 
         module_args['target'] = target

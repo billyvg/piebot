@@ -3,10 +3,10 @@ from modules import *
 class Irc(Module):
     """IRC Module to provide chat commands for common IRC actions."""
 
-    def __init__(self, server):
+    def __init__(self, *args, **kwargs):
 	    """Constructor."""
 	    
-	    Module.__init__(self, server)
+	    Module.__init__(self, kwargs=kwargs)
 
     def _register_events(self):
         """Register module events and commands."""
@@ -127,7 +127,6 @@ class Irc(Module):
     def giveop(self, event):
         """Ops a person in the specified channel, or the current channel."""
         
-        print self.num_args
         if self.num_args == 0:
             self.server.mode(event['target'], '+o %s' % event['nick'])
         elif self.num_args == 1:

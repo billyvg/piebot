@@ -13,7 +13,7 @@ from handlers import Handler
 class ModuleHandler(Handler):
     """Class to handle modules: loading, reloading, unloading, autoloading"""
 
-    def __init__(self, server):
+    def __init__(self, server, irc):
         """Constructor
         
         @param the irclib server object
@@ -21,6 +21,7 @@ class ModuleHandler(Handler):
         """
 
         self.server = server
+        self.irc = irc
         self.modules = {}
         self.commands = {}
         self.events = {}
@@ -49,7 +50,7 @@ class ModuleHandler(Handler):
         try:
             for component_name in component_names[1:]:
                 mod = getattr(mod, component_name)
-            module = mod(self.server)
+            module = mod(server=self.server, irc=self.irc)
             # keep a dictionary of modules, with the module name as the key
             self.modules[name] = module
             
@@ -91,7 +92,7 @@ class ModuleHandler(Handler):
                 reload(sys.modules[self.modules[module].__module__])
                 print "Reloaded module: %s" % module
                 mod = getattr(sys.modules[self.modules[module].__module__], module)
-                m = mod(self.server)
+                m = mod(server=self.server, irc=self.irc)
                 self.modules[module] = m
                 return True
             except:

@@ -50,7 +50,7 @@ class ppbot:
         self.config.session_start()
         
         # initialize the module handler
-        self.module_handler = ModuleHandler(self.servers)
+        self.module_handler = ModuleHandler(self.servers, self.irc)
         # initialize the event handler
         self.event_handler = EventHandler(self.servers)
         self.event_handler.module_handler = self.module_handler
@@ -95,9 +95,10 @@ class ppbot:
         self.module_handler.load('Weather')
         self.module_handler.load('Urlparser')
         self.module_handler.load('Stock')
+        self.module_handler.load('Twitter')
+        #self.module_handler.load('Git')
         #self.module_handler.load('Chatbot')
         #self.module_handler.load('Riftstatus')
-        #self.module_handler.load('Git')
 
 if __name__ == "__main__":
     bot = ppbot()

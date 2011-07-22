@@ -15,10 +15,10 @@ from modules import *
 
 class Weather(Module):
     
-    def __init__(self, server):
+    def __init__(self, *args, **kwargs):
         """Constructor"""
         
-        Module.__init__(self, server)
+        Module.__init__(self, kwargs=kwargs)
         
         # url for wunderground's api, forecast url
         self.wurl = 'http://www.google.com/ig/api?weather=%s'
@@ -32,7 +32,7 @@ class Weather(Module):
         """Action to react/respond to user calls."""
         
         # need to fetch the weather and parse it
-        zipcode = ''.join(event['args'])
+        zipcode = ' '.join(event['args'])
         try:
             weather = self.get_weather(zipcode)
             # stylize the message output

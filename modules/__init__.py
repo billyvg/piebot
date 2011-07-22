@@ -66,7 +66,7 @@ class Module:
     """The base module class where all of our modules will be derived from."""
     #commands = {}
         
-    def __init__(self, server):
+    def __init__(self, *args, **kwargs):
         #self.server = server
         # server object from irclib
         # events dict that is created via irclib on each irc event
@@ -75,6 +75,7 @@ class Module:
         self.commands = {}
         self.num_args = 0
         self._register_events()
+        self.irc = kwargs['kwargs']['irc']
         
     def _register_events(self):
         """Registers an event so that the eventhandler can pass the module

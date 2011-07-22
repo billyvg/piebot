@@ -6,10 +6,10 @@ class Core(Module):
 
     """
 
-    def __init__(self, server):
+    def __init__(self, *args, **kwargs):
         """Constructor."""
 
-        Module.__init__(self, server)
+        Module.__init__(self, kwargs=kwargs)
         self.module_handler = None
 
     def _register_events(self):

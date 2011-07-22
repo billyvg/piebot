@@ -16,10 +16,10 @@ from modules import *
 
 class Stock(Module):
     
-    def __init__(self, server):
+    def __init__(self, *args, **kwargs):
         """Constructor"""
         
-        Module.__init__(self, server)
+        Module.__init__(self, kwargs=kwargs)
         
         self.url = "http://www.google.com/finance/info?infotype=infoquoteall&q=%s"
         

@@ -14,10 +14,10 @@ class Urlparser(Module):
 
     """
 
-    def __init__(self, server):
+    def __init__(self, *args, **kwargs):
         """Constructor."""
 
-        Module.__init__(self, server)
+        Module.__init__(self, kwargs=kwargs)
         self.url_pattern = re.compile("http://(.*?$(?<!jpg|png|gif))")
 
     def _register_events(self):
@@ -30,19 +30,12 @@ class Urlparser(Module):
             if m:
                 try:
                     short_url = self.get_short_url(m.group(0))
-                except:
-                    # need some proper logging =[
-                    print "short url fail: %s" % m.group(0)
-                    print traceback.print_exc()
-
-                try:
                     self.server.privmsg(event['target'], "%s .:. %s" % (short_url, self.get_url_title(m.group(0))))
                 except:
-                    print "prob with url parser: %s" % m.group(0)
-                    print traceback.print_exc()
+                    # need some proper logging =[
+                    pass
         except:
-            print "prob a 0 char message in IRC"
-            print traceback.print_exc()
+            pass
 
     def get_url_title(self, url):
         """Connects to a URL and grabs the site title"""

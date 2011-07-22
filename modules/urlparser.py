@@ -19,7 +19,7 @@ class Urlparser(Module):
 
         Module.__init__(self, kwargs=kwargs)
         self.url_pattern = re.compile("http://(.*?$(?<!jpg|png|gif))")
-        self.youtube_pattern = re.compile("http(s|)://(www\.|)youtube.com/#!/watch")
+        self.youtube_pattern = re.compile("http(s|)://(www\.|)youtube.com/(#!/|)watch")
         
 
     def _register_events(self):
@@ -30,11 +30,12 @@ class Urlparser(Module):
         try:
             m = self.url_pattern.search(event['message'])
             if m:
+                matched_url = m.group(0)
                 try:
-                    d = self.youtube_pattern.search(m.group(0))
+                    d = self.youtube_pattern.search(matched_url)
                     if d:
-                        m.group(0) = m.group(0) += "&hd=1"
-                    short_url = self.get_short_url(m.group(0))
+                        matched_url = matched_url + "&hd=1"
+                    short_url = self.get_short_url(matched_url)
                     self.server.privmsg(event['target'], "%s .:. %s" % (short_url, self.get_url_title(m.group(0))))
                 except:
                     # need some proper logging =[

@@ -7,6 +7,7 @@ try:
     import simplejson as json
 except ImportError:
     import json
+from unidecode import unidecode
 
 class Urlparser(Module):
     """Checks incoming messages for possible urls.  If a url is found then
@@ -31,16 +32,26 @@ class Urlparser(Module):
             m = self.url_pattern.search(event['message'])
             if m:
                 matched_url = m.group(0)
+                title = ''
+
+                try:
+                    title = self.get_url_title(matched_url)
+                except:
+                    print traceback.print_exc()
+                    print "LOL TITLE IS FUCKED"
+
                 try:
                     d = self.youtube_pattern.search(matched_url)
                     if d:
                         matched_url = matched_url + "&hd=1"
                     short_url = self.get_short_url(matched_url)
-                    self.server.privmsg(event['target'], "%s .:. %s" % (short_url, self.get_url_title(m.group(0))))
+                    self.server.privmsg(event['target'], "%s .:. %s" % (short_url, title))
                 except:
+                    print traceback.print_exc()
                     # need some proper logging =[
                     pass
         except:
+            print traceback.print_exc()
             pass
 
     def get_url_title(self, url):
@@ -53,7 +64,32 @@ class Urlparser(Module):
         regex = '<title[^>]*>(.*?)</title>'
         m = re.search(regex, page, re.S)
         if m:
-            return ' '.join(self.unescape(m.group(1)).split()).encode('ascii', 'ignore')
+            title = m.group(1)
+            title = title.strip()
+            title = title.replace('\t', ' ')
+            title = title.replace('\n', ' ')
+            title = title.replace('\r', ' ')
+            try: title.decode('utf-8')
+            except:
+                try: title = title.decode('iso-8859-1').encode('utf-8')
+                except: title = title.decode('cp1252').encode('utf-8')
+
+            r_entity = re.compile(r'&[A-Za-z0-9#]+;')
+            def e(m): 
+                entity = m.group(0)
+                if entity.startswith('&#x'): 
+                    cp = int(entity[3:-1], 16)
+                    return unichr(cp).encode('utf-8')
+                elif entity.startswith('&#'): 
+                    cp = int(entity[2:-1])
+                    return unichr(cp).encode('utf-8')
+                else: 
+                    char = htmlentitydefs.name2codepoint[entity[1:-1]]
+                    return unichr(char).encode('utf-8')
+            title = r_entity.sub(e, title)
+
+            title = unidecode(title)
+            return title
         else:
             return "<No Title>"
 

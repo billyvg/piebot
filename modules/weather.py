@@ -31,22 +31,23 @@ class Weather(Module):
     def w(self, event):
         """Action to react/respond to user calls."""
         
-        # need to fetch the weather and parse it
-        zipcode = ' '.join(event['args'])
-        try:
-            weather = self.get_weather(zipcode)
-            # stylize the message output
-            message1 = "%(city)s (%(zipcode)s) - Currently: %(temp_f)sF (%(temp_c)sC) - Conditions: %(condition)s, %(humidity)s, %(wind)s" % (weather)
-            message2 = "Today (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][0]
-            message3 = "Tomorrow (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][1]
-            # send the messages
-            self.msg(event['target'], message1)
-            self.msg(event['target'], message2)
-            self.msg(event['target'], message3)
-        except:
-            self.msg(event['target'], 'Could not get weather data for "%s"' % zipcode)
-            print "something fucked connecting to weather api. : %s" % zipcode
-            #self.syntax_message(event['nick'], '.w <zipcode>')
+        if self.num_args >= 1:
+            # need to fetch the weather and parse it
+            zipcode = ' '.join(event['args'])
+            try:
+                weather = self.get_weather(zipcode)
+                # stylize the message output
+                message1 = "%(city)s (%(zipcode)s) - Currently: %(temp_f)sF (%(temp_c)sC) - Conditions: %(condition)s, %(humidity)s, %(wind)s" % (weather)
+                message2 = "Today (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][0]
+                message3 = "Tomorrow (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][1]
+                # send the messages
+                self.msg(event['target'], message1)
+                self.msg(event['target'], message2)
+                self.msg(event['target'], message3)
+            except:
+                self.msg(event['target'], 'Could not get weather data for "%s"' % zipcode)
+        else:
+            self.syntax_message(event['target'], '.w <zipcode>')
         
         
     def get_weather(self, zipcode):

@@ -56,8 +56,10 @@ class Urlparser(Module):
 
     def get_url_title(self, url):
         """Connects to a URL and grabs the site title"""
+        USER_AGENT = 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.1 (KHTML, like Gecko) Ubuntu/11.04 Chromium/14.0.825.0 Chrome/14.0.825.0 Safari/535.1'
 
         req = urllib2.Request(url)
+        req.add_header('User-Agent', USER_AGENT)
         response = urllib2.urlopen(req)
         page = response.read()
 

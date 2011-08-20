@@ -46,12 +46,7 @@ def command(f):
     """Decorator to add the method as a command."""
     def new(*args, **kwargs):
         module = getattr(sys.modules[f.__module__], 'Module')
-        print Module.commands
-        print args
-        print kwargs
-        print dir(f)
         return f(*args, **kwargs)
-    print f
     return new
     #print dir(module)
     #add_command = getattr(module, 'add_command')

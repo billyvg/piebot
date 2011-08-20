@@ -4,4 +4,4 @@ env
 build
 .DS_Store
 *.swp
-
+*.cfg

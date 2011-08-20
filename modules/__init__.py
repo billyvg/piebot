@@ -6,13 +6,13 @@ Module for our bot's modules.  Contains the base module class.
 import traceback
 from db import Db
 
-from user import *
+from models.user import *
 
+session = Db.session
 # define some decorators here, to be used by modules for access control
 def access(*a, **kw):
     def check_access(f, *args, **kwargs):
         def new_f(*args, **kwargs):
-            session = Db.session          
             try:
                 # query the database to check to see if the user is a master or owner
                 query = session.query(User).filter(User.name == args[1]['nick'])

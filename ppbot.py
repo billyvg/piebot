@@ -4,11 +4,22 @@ A modular python bot that utilizes/will utilize postgresql as a data source.
 
 TODO: Lots
 """
+
+# traceback shit
+import inspect
+import traceback
+import sys
+import string
+
+from optparse import OptionParser
+import ConfigParser
+
 # database stuff
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 import irclib
+
 from handlers.modulehandler import ModuleHandler
 from handlers.eventhandler import EventHandler
 
@@ -19,49 +30,44 @@ from models.channel import Channel
 
 from db import Db
 
-# traceback shit
-import inspect
-import traceback
-import sys
-import string
 
-#irclib.DEBUG = True
+config = ConfigParser.RawConfigParser()
+config.readfp(open('ppbot.cfg'))
+
+irclib.DEBUG = config.getboolean('debug', 'irclib')
 
 class ppbot:
-    
+
     def __init__ (self):
         """Create an IRC object and do some initializations.
         Need to set handlers for events that may occur so that modules will be able to
         use them.
-        
+
         """
-    
+
         self.irc = irclib.IRC()
         self.servers = []
-        
-        
+
         # initialize the databse
         self.engine = Db.engine
         self.session = Db.session
-        
-        
+
         # load configuration
         self.config = Configuration()
         self.config.session_start()
-        
+
         # initialize the module handler
         self.module_handler = ModuleHandler(self.servers, self.irc)
         # initialize the event handler
         self.event_handler = EventHandler(self.servers)
         self.event_handler.module_handler = self.module_handler
-        
+
         # send all events to the event handler dispatcher
         self.irc.add_global_handler('all_events', self.event_handler.dispatcher)
-        
+
         # load the default modules and auto-run modules
         self.load_modules()
-      
-        
+
     def connect(self):
         """ Create a server object, connect and join the channel. """
 
@@ -85,9 +91,9 @@ class ppbot:
     def load_modules(self):
         """ for now we will manually load modules, but this will eventually 
         call the database for what modules to auto-load
-            
+
         """
-        
+
         core = self.module_handler.load('Core')
         core.module_handler = self.module_handler
 
@@ -101,5 +107,14 @@ class ppbot:
         #self.module_handler.load('Riftstatus')
 
 if __name__ == "__main__":
+    parser = OptionParser()
+    parser.add_option('-i', '--init-db', dest='initdb', action="store_true",
+                        help='Initialize the database.')
+
+    (options, args) = parser.parse_args()
+
+    if options.initdb:
+        Db().init_db()
+
     bot = ppbot()
     bot.connect()

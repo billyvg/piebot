@@ -55,16 +55,5 @@ class Configuration(Base, Model):
             print "Error: Could not connect to database."
             print traceback.print_exc()
 
-        # should do this elsewhere
-        self.session.add_all([
-            Configuration('network', 'irc.gamesurge.net', 'The name of the network to connect to. (temp. )'),
-            Configuration('port', '6667', 'The port of the IRC server.'),
-            Configuration('nickname', 'dongbot', 'The nickname that the bot should use.'),
-            Configuration('password', '', 'The password for a server if necessary'),
-            Configuration('alt_nickname', 'dongbot_', 'An alternate nickname the bot should use if the primary is in use.'),
-            Configuration('realname', 'Powered by billy', 'The "real name" field displayed on /whois.'),
-            Configuration('me', 'billy', 'lol...'),
-            Configuration('trigger', '.', 'The trigger that the bot should respond to.'),
-        ])
-        #self.session.commit()
+        self.session.commit()
         self.session.close()

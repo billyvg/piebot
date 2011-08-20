@@ -1,0 +1,6 @@
+[db]
+user=ppbot
+password=
+host=localhost
+port=5432
+dbname=ppbot

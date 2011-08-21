@@ -31,44 +31,35 @@ class Server(Base, Model):
     realname = Column(String(50), nullable=False)
 
     network = relationship(Network, backref="servers")
-    
+
     def __init__(self, **kwargs):
         Model.__init__(self)
         Base.__init__(self)
+        self.metadata = Base.metadata
 
         for name, val in kwargs.iteritems():
             self.__setattr__(name, val)
-        
+
     def __repr__(self):
         """Pretty string formatting."""
-    
+
         return '<Server(%s)>' % (self.address)
 	
 	def val2(self, key):
 	    """Retrieves a configuration row by its key."""
 	
         return self.session.query(Server).filter_by(name=key).all()
-        
+
     def val(self, key):
         """Retrieves a configuration value by its key."""
-        
+
         return self.session.query(Server).filter_by(name=key).first().value
 
-    def session_start(self, commit=False):
-        # create the necessary tables in the database using the metadata
-        # from the classes
-        try:
-            metadata = Base.metadata
-            metadata.create_all(self.engine)
-        except:
-            print "Error: Could not connect to database."
-            print traceback.print_exc()
+    def initialize_table(self):
+        self.session.add_all([
+            Server(network_id=1, address="irc.gamesurge.net", port=6667,
+                   nickname="ppbot", alt_nickname="ppbot",
+                   realname="Powered by Dong Energy"),
+        ])
 
-        # should do this elsewhere
-        if commit:
-            self.session.add_all([
-                Server(network_id=1, address="irc.gamesurge.net", port=6667, nickname="dong", alt_nickname="dongy", realname="Powered by Dong Energy"),
-                Server(network_id=2, address="irc.freenode.net", port=6667, nickname="focusbot", alt_nickname="focusbot_", realname="Focus.com"),
-            ])
-            self.session.commit()
-            self.session.close()
+        Model.initialize_table(self)

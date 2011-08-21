@@ -18,7 +18,7 @@ from db import Db
 
 Base = declarative_base()
 
-class User(Base):
+class User(Base, Model):
     __tablename__ = 'users'
 
     # set the different fields in the user database
@@ -28,10 +28,16 @@ class User(Base):
     access = Column(Integer, ForeignKey('access.id'))
 
     def __init__(self, name=None, password=None, access=None, **kwargs):
-    	#self.users = self._getUsers()
+        Model.__init__(self)
+        Base.__init__(self)
+        self.metadata = Base.metadata
+
     	self.name = name
     	self.password = password
     	self.access = access
+
+        for name, val in kwargs.iteritems():
+            self.__setattr__(name, val)
 	
     def __repr__(self):
         """Pretty string formatting."""

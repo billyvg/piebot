@@ -51,8 +51,15 @@ class Db:
 
         from models.configuration import Configuration
         from models.user import Access
+        from models.network import Network
+        from models.server import Server
+        from models.channel import Channel
 
-        config = Configuration()
-        config.initialize_table()
-        access = Access()
-        access.initialize_table()
+
+        #init_list = ['Configuration', 'Access', 'Network', 'Server', 'Channel']
+        # should probably check if the db needs initializing
+        init_list = [Configuration(), Access(), Network(), Server(), Channel()]
+
+        for x in init_list:
+            x.initialize_table()
+

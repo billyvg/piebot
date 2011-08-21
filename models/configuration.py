@@ -26,6 +26,8 @@ class Configuration(Base, Model):
     def __init__(self, name=None, value=None, description=None, **kwargs):
         Model.__init__(self)
         Base.__init__(self)
+        self.metadata = Base.metadata
+
     	self.name = name
     	self.value = value
     	self.description = description
@@ -49,14 +51,6 @@ class Configuration(Base, Model):
         pass
 
     def initialize_table(self):
-        # create the necessary tables in the database using the metadata
-        # from the classes
-        try:
-            metadata = Base.metadata
-            metadata.create_all(self.engine)
-        except:
-            print "Error: Could not connect to database."
-            print traceback.print_exc()
 
         self.session.add_all([
             Configuration('network', 'localhost', 'The name of the network to connect to. (temp. )'),
@@ -69,5 +63,5 @@ class Configuration(Base, Model):
             Configuration('trigger', '.', 'The trigger that the bot should respond to.'),
         ])
 
-        self.session.commit()
-        self.session.close()
+        Model.initialize_table(self)
+

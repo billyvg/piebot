@@ -1,6 +1,8 @@
 import re, htmlentitydefs
 import urllib2
 import string
+import traceback
+
 try:
     import simplejson as json
 except ImportError:
@@ -106,8 +108,6 @@ class Bitly(object):
         page = response.read()
 
         decoded = json.loads(page)
-        import pdb
-        pdb.set_trace()
         if decoded['status_code'] == 200:
             return decoded['data']['url']
 

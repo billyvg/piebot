@@ -3,14 +3,13 @@
 
 """
 
-import ConfigParser
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
 
-config = ConfigParser.RawConfigParser()
-config.readfp(open('ppbot.cfg'))
+from config import BotConfig
+
+config = BotConfig()
 db_connect = 'postgresql://%s:%s@%s:%d/%s' % (
                 config.get('db', 'user'),
                 config.get('db', 'password'),
@@ -19,7 +18,7 @@ db_connect = 'postgresql://%s:%s@%s:%d/%s' % (
                 config.get('db', 'dbname')
             )
 
-class Db:
+class Db(object):
     """
     Initializes the database
 
@@ -56,7 +55,6 @@ class Db:
         from models.channel import Channel
 
 
-        #init_list = ['Configuration', 'Access', 'Network', 'Server', 'Channel']
         # should probably check if the db needs initializing
         init_list = [Configuration(), Access(), Network(), Server(), Channel()]
 

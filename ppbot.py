@@ -4,19 +4,8 @@ A modular python bot that utilizes/will utilize postgresql as a data source.
 
 TODO: Lots
 """
-
-# traceback shit
-import inspect
 import traceback
-import sys
-import string
-
 from optparse import OptionParser
-import ConfigParser
-
-# database stuff
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 import irclib
 
@@ -30,13 +19,9 @@ from models.channel import Channel
 
 from db import Db
 
+from config import BotConfig
 
-config = ConfigParser.RawConfigParser()
-config.readfp(open('ppbot.cfg'))
-
-irclib.DEBUG = config.getboolean('debug', 'irclib')
-
-class ppbot:
+class ppbot(object):
 
     def __init__ (self):
         """Create an IRC object and do some initializations.
@@ -102,19 +87,23 @@ class ppbot:
         self.module_handler.load('Urlparser')
         self.module_handler.load('Stock')
         self.module_handler.load('Twitter')
-        #self.module_handler.load('Git')
-        #self.module_handler.load('Chatbot')
-        #self.module_handler.load('Riftstatus')
 
 if __name__ == "__main__":
     parser = OptionParser()
-    parser.add_option('-i', '--init-db', dest='initdb', action="store_true",
+    parser.add_option('-i', '--init-db', dest='initdb', action='store_true',
                         help='Initialize the database.')
+    # parser.add_option('-c', '--config', dest='config_file', action='store',
+    #                     type='string', default='ppbot.cfg', help='Initialize the database.')
 
     (options, args) = parser.parse_args()
+
 
     if options.initdb:
         Db().init_db()
 
+    config = BotConfig()
+    irclib.DEBUG = config.getboolean('debug', 'irclib')
+
     bot = ppbot()
     bot.connect()
+

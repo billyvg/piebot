@@ -68,7 +68,10 @@ class ppbot(object):
             # since it could be possible to have more than one server to 
             # try to connect to.
             server_config = network.servers[0]
-            server.connect(server_config.address, server_config.port, server_config.nickname, server_config.password, ircname=server_config.realname)
+            try:
+                server.connect(server_config.address, server_config.port, server_config.nickname, server_config.password, ircname=server_config.realname)
+            except irclib.ServerConnectionError, e:
+                print "<<Error>> Couldn't connect to %s:%s" % (server_config.address, server_config.port)
 
         # jump into an infinite loop
         self.irc.process_forever()

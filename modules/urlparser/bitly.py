@@ -96,15 +96,21 @@ class Bitly(object):
         api_key = config.get('bitly', 'api_key')
         api_login = config.get('bitly', 'api_login')
         api_version = config.get('bitly', 'api_version')
-        api_url = 'http://api.bit.ly/shorten?version=%s&longUrl=%s&login=%s&apiKey=%s' % (api_version, string.replace(url, '&', '%26'), api_login, api_key)
+        api_url = 'http://api.bit.ly/v3/shorten?&login=%s&apiKey=%s&longUrl=%s' % (
+                        api_login, api_key,
+                        string.replace(url, '&', '%26')
+                    )
 
         req = urllib2.Request(api_url)
         response = urllib2.urlopen(req)
         page = response.read()
 
         decoded = json.loads(page)
-        if decoded['results']:
-            return decoded['results'][url]['shortUrl']
+        import pdb
+        pdb.set_trace()
+        if decoded['status_code'] == 200:
+            return decoded['data']['url']
+
 
     def unescape(self, text):
         """Try to unescape the different weird characters in titles."""

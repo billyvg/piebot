@@ -86,7 +86,6 @@ class ppbot(object):
         self.module_handler.load('Weather')
         self.module_handler.load('Urlparser')
         self.module_handler.load('Stock')
-        self.module_handler.load('Twitter')
 
 if __name__ == "__main__":
     parser = OptionParser()

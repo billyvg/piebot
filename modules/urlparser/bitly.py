@@ -97,7 +97,6 @@ class Bitly(object):
         config = BotConfig()
         api_key = config.get('bitly', 'api_key')
         api_login = config.get('bitly', 'api_login')
-        api_version = config.get('bitly', 'api_version')
         api_url = 'http://api.bit.ly/v3/shorten?&login=%s&apiKey=%s&longUrl=%s' % (
                         api_login, api_key,
                         string.replace(url, '&', '%26')

@@ -24,7 +24,7 @@ class Twitter(object):
     def handle(self, match, **kwargs):
         try:
             data = self.fetch (match.group(3))
-            return '\x02%s\x02 tweets "%s"' % (tweet['user']['name'], tweet['text'])
+            return '\x02%s\x02 tweets "%s"' % (data['user']['name'], data['text'])
         except:
             print "Problem fetching tweet"
             print traceback.print_exc()

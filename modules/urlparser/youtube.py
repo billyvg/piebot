@@ -16,7 +16,8 @@ class Youtube(object):
     video details and statistics.
 
     """
-    pattern = re.compile("http(s|)://(www\.|)youtube.com/.*?v=([^&#]+)")
+
+    pattern = re.compile("http(s|)://(www\.|)youtu(?:\.be/|be\.com/.*?v=)([^&# ]+)")
 
     def __init__(self, *args, **kwargs):
         """Constructor."""

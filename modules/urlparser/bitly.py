@@ -39,11 +39,9 @@ class Bitly(object):
                 return "%s .:. %s" % (short_url, title)
             except:
                 print "<<Error>> Could not retrieve bit.ly URL"
-                print traceback.print_exc()
                 # need some proper logging =[
         except:
             print "<<Error>> Could not retrieve title of webpage: %s" % matched_url
-            print traceback.print_exc()
 
 
     def get_url_title(self, url):

@@ -15,7 +15,7 @@ class Twitter(object):
         Implement commands for Twitter functionality
 
     """
-    pattern = re.compile("http(s|)://(www\.|)twitter.com/#!/[^/]+/status/([0-9]+)")
+    pattern = re.compile("http(s|)://(www\.|)twitter.com/(?:#!/|)[^/]+/status/([0-9]+)")
 
     def __init__(self, *args, **kwargs):
         """Constructor."""
@@ -24,7 +24,7 @@ class Twitter(object):
     def handle(self, match, **kwargs):
         try:
             data = self.fetch (match.group(3))
-            return '\x02%s\x02 tweets "%s"' % (data['user']['name'], data['text'])
+            return '\x02%s\x02 tweets "%s"' % (data['user']['name'], ''.join(data['text'].splitlines()))
         except:
             print "Problem fetching tweet"
             print traceback.print_exc()

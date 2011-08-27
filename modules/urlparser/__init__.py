@@ -47,8 +47,9 @@ class Urlparser(Module):
                 if m:
                     handler_instance = handler()
                     msg = handler_instance.handle(event=event, match=m)
-                    self.server.privmsg(event['target'], msg)
-                    break
+                    if msg:
+                        self.server.privmsg(event['target'], msg)
+                        break
         except:
             print "<<Error>> in Urlparser"
             print traceback.print_exc()

@@ -7,7 +7,7 @@ Will be using wunderground.com's API.
 @syntax w <zipcode>
 
 """
-import urllib2
+import urllib, urllib2
 import string
 from xml.dom.minidom import parseString
 
@@ -54,7 +54,7 @@ class Weather(Module):
         """Connects to google's secret weather API and parses the receiving XML for the weather."""
         
         # make the parser, and send the xml to be parsed
-        xml = urllib2.urlopen(self.wurl % zipcode).read()
+        xml = urllib2.urlopen(self.wurl % urllib.quote_plus(zipcode)).read()
         xml = string.replace(xml, '<?xml version="1.0"?>', '')
         dom = parseString(xml)
         weather = {}

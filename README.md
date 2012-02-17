@@ -8,14 +8,7 @@ I want to learn it and move away from mysql. Portability may be
 something that I will worry about later.
 
 # Install #
-pip install -r requirements.txt
-
-# PostgreSQL #
-CREATE USER psql; 
-insert into access (access) values ('master');
-insert into access (access) values ('owner');
-insert into access (access) values ('op');
-insert into access (access) values ('user');
-insert into access (access) values ('guest');
-insert into access (access) values ('all');
-
+``pip install -r requirements.txt``
+Edit ppbot.cfg
+``python db.py``
+``python ppbot.py``

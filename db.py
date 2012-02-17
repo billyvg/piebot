@@ -61,3 +61,7 @@ class Db(object):
         for x in init_list:
             x.initialize_table()
 
+if __name__ == "__main__":
+	db = Db()
+	db.connect_db()
+	db.init_db()

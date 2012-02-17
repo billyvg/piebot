@@ -37,13 +37,16 @@ class Youtube(object):
 
             ts = time.strptime(data.published.text[:19], '%Y-%m-%dT%H:%M:%S')
             timestamp = time.strftime('%m-%d-%Y', ts)
-            return '\x02%s\x02 - length \x02%s\x02 - rated \x02%.1f\x02/5.0 (%d) - \x02%d\x02 views - Posted by \x02%s\x02 on \x02%s\x02' % (
-                        data.media.title.text, duration,
-                        float(data.rating.average), int(data.rating.num_raters),
-                        int(data.statistics.view_count),
-                        data.author[0].name.text,
-                        timestamp
-                    )
+            try:
+                return '\x02%s\x02 - length \x02%s\x02 - rated \x02%.1f\x02/5.0 (%d) - \x02%d\x02 views - Posted by \x02%s\x02 on \x02%s\x02' % (
+                            data.media.title.text, duration,
+                            float(data.rating.average), int(data.rating.num_raters),
+                            int(data.statistics.view_count),
+                            data.author[0].name.text,
+                            timestamp
+                        )
+            except AttributeError:
+                print "Atttribute error with youtube"
 
         except:
             print "Problem fetching video"

@@ -50,5 +50,5 @@ class Rottentomatoes(Module):
                     )
             self.msg(event['target'], message)
             self.msg(event['target'], '[synopsis] %s' % (result['critics_consensus']))
-        except KeyError:
+        except IndexError, KeyError:
             self.msg(event['target'], 'Could not find "%s" on rottentomatoes.com' % term)

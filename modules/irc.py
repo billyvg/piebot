@@ -1,5 +1,6 @@
 from modules import *
 
+
 class Irc(Module):
     """IRC Module to provide chat commands for common IRC actions."""
 

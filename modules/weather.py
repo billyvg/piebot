@@ -7,30 +7,32 @@ Will be using wunderground.com's API.
 @syntax w <zipcode>
 
 """
-import urllib, urllib2
+import urllib
+import urllib2
 import string
 from xml.dom.minidom import parseString
 
 from modules import *
 
+
 class Weather(Module):
-    
+
     def __init__(self, *args, **kwargs):
         """Constructor"""
-        
+
         Module.__init__(self, kwargs=kwargs)
-        
+
         # url for wunderground's api, forecast url
         self.wurl = 'http://www.google.com/ig/api?weather=%s'
-        
+
     def _register_events(self):
         """Register module commands."""
-        
+
         self.add_command('w')
-    
+
     def w(self, event):
         """Action to react/respond to user calls."""
-        
+
         if self.num_args >= 1:
             # need to fetch the weather and parse it
             zipcode = ' '.join(event['args'])
@@ -48,11 +50,10 @@ class Weather(Module):
                 self.msg(event['target'], 'Could not get weather data for "%s"' % zipcode)
         else:
             self.syntax_message(event['target'], '.w <zipcode>')
-        
-        
+
     def get_weather(self, zipcode):
         """Connects to google's secret weather API and parses the receiving XML for the weather."""
-        
+
         # make the parser, and send the xml to be parsed
         xml = urllib2.urlopen(self.wurl % urllib.quote_plus(zipcode)).read()
         xml = string.replace(xml, '<?xml version="1.0"?>', '')
@@ -74,10 +75,10 @@ class Weather(Module):
 
         for x in forecast_conditions:
             fc_temp = {}
-            fc_temp['day'] = x.getElementsByTagName('day_of_week')[0].getAttribute('data') 
-            fc_temp['low'] = x.getElementsByTagName('low')[0].getAttribute('data') 
-            fc_temp['high'] = x.getElementsByTagName('high')[0].getAttribute('data') 
-            fc_temp['condition'] = x.getElementsByTagName('condition')[0].getAttribute('data') 
+            fc_temp['day'] = x.getElementsByTagName('day_of_week')[0].getAttribute('data')
+            fc_temp['low'] = x.getElementsByTagName('low')[0].getAttribute('data')
+            fc_temp['high'] = x.getElementsByTagName('high')[0].getAttribute('data')
+            fc_temp['condition'] = x.getElementsByTagName('condition')[0].getAttribute('data')
             forecast.append(fc_temp)
 
         weather['forecast'] = forecast

@@ -146,3 +146,7 @@ class Module:
 
         self.server.privmsg(target, message)
 
+    def bold(self, message):
+        """Helper function to bold a message."""
+
+        return "\x02%s\x02" % message

@@ -45,20 +45,20 @@ class Url(Base, Model):
 
 
 class Urldupe(Module):
-    
+
     def __init__(self, *args, **kwargs):
         """Constructor"""
-        
+
         Module.__init__(self, kwargs=kwargs)
-        
+
         self.url_pattern = re.compile('http://[^ ]+')
 
     def _register_events(self):
         self.add_event('pubmsg', 'urldupe')
-        
+
     def urldupe(self, event):
         """Action to react/respond to chat messages."""
-        
+
         m = self.url_pattern.search(event['message'])
 
         if m:

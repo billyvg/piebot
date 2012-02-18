@@ -57,6 +57,11 @@ class Karmamod(Module):
         self.add_command('karma', 'get_karma')
         self.add_event('pubmsg', 'parsekarma')
 
+    def get_karma(self, event):
+        karma = Karma(name=event['args'][0], source=event['target'])
+        result = karma.get().first()
+        self.msg(event['target'], '%s has %d karma.' % (event['args'][0], result.count))
+
     def parsekarma(self, event):
         inc_pattern = re.compile('([^ ]{2,})\+\+')
         m = inc_pattern.findall(event['message'])

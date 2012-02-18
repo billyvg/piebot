@@ -8,7 +8,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, DateTime, func
+from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, DateTime, Text, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 
@@ -20,7 +20,7 @@ class Url(Base, Model):
     __tablename__ = 'urldupe_urls'
 
     id = Column(Integer, primary_key=True)
-    url = Column(String(255), nullable=False)
+    url = Column(Text, nullable=False)
     time = Column(DateTime, default=func.now())
     username = Column(String(50), nullable=False)
     channel = Column(String(50), nullable=False)

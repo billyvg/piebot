@@ -14,6 +14,8 @@ from modules import *
 from models import Model
 
 Base = declarative_base()
+
+
 class Url(Base, Model):
     __tablename__ = 'urldupe_urls'
 
@@ -72,14 +74,15 @@ class Urldupe(Module):
             if num_dupes == 1:
                 rd = relativedelta(datetime.now(), dupes[0].time)
                 message = "%s: That url was already linked by %s %s ago." % (
-                        bold(event['nick']),
+                        event['nick'],
                         dupes[0].username,
                         self.pretty_time_duration(rd)
                         )
                 self.msg(event['target'], message)
             elif num_dupes > 1:
                 rd = relativedelta(datetime.now(), dupes[0].time)
-                message = "%s: That url has been linked \x02%d\x02 times already (first linked by \x02%s\x02 %s ago)." % (
+                message = ("%s: That url has been linked %d times already"
+                            " (first linked by \x02%s\x02 %s ago).") % (
                         event['nick'],
                         num_dupes,
                         dupes[0].username,

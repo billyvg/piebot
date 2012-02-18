@@ -12,6 +12,7 @@ import json
 from config import BotConfig
 from modules import *
 
+
 class Rottentomatoes(Module):
     API_URL = 'http://api.rottentomatoes.com/api/public/v1.0/movies.json?%s'
 
@@ -33,7 +34,6 @@ class Rottentomatoes(Module):
         r = requests.get(self.__class__.API_URL % (params))
         resp = json.loads(r.text)
 
-        print resp
         try:
             result = resp['movies'][0]
             result.setdefault('critics_consensus', result['synopsis'])

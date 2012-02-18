@@ -40,8 +40,8 @@ def decorator_generator():
 decorator_generator()
 for f in level_lambdas:
     vars()[f] = level_lambdas[f]
-    
-    
+
+
 def command(f):
     """Decorator to add the method as a command."""
     def new(*args, **kwargs):
@@ -56,11 +56,11 @@ def command(f):
     #module.commands[f.__name__] = f.__name__
     #module.add_command(f.__name__)
     #return f
-    
+
 class Module:
     """The base module class where all of our modules will be derived from."""
     #commands = {}
-        
+
     def __init__(self, *args, **kwargs):
         #self.server = server
         # server object from irclib
@@ -71,21 +71,21 @@ class Module:
         self.num_args = 0
         self._register_events()
         self.irc = kwargs['kwargs']['irc']
-        
+
     def _register_events(self):
         """Registers an event so that the eventhandler can pass the module
         the required data.
-        
+
         """
         pass
-    
+
     def add_event(self, event_type, action):
         """Registers an event with the event handler."""
-        
+
         self.events[event_type] = action
-        
+
     def add_command(self, command, action=None, event_type='allmsg'):
-        """Register a command.  
+        """Register a command.
 
         If action is None, then the default action will be the command name.
         @param command      A string that will be used as the command
@@ -100,10 +100,10 @@ class Module:
             action = command
 
         self.commands[command] = action
-        
+
     def handle(self, action, event):
         """Calls the function that a command was bound to."""
-        
+
         self.server = event['connection']
         # set the number of arguments
         self.num_args = event['num_args']
@@ -114,15 +114,15 @@ class Module:
         except:
             # print out traceback if something wrong happens in the module
             print traceback.print_exc()
-                
+
     def handle_command(self, event):
         """Calls the function that a command was bound to."""
-        
+
         self.server = event['connection']
         # set the number of arguments
         self.num_args = event['num_args']
         command = event['command']
-        
+
         try:
             call_func = getattr(self, self.commands[command])
             call_func(event)
@@ -135,14 +135,14 @@ class Module:
 
         message = "syntax: %s" % syntax
         self.server.notice(target, message)
-        
+
     def notice(self, target, message):
         """Gives modules the ability to send a notice to a user."""
-        
+
         self.server.notice(target, message)
-        
+
     def msg(self, target, message):
         """Gives modules the ability to send a message to a user/channel."""
 
         self.server.privmsg(target, message)
-    
+

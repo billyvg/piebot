@@ -1,4 +1,6 @@
+import traceback
 from db import Db
+
 
 class Model(object):
 
@@ -14,9 +16,12 @@ class Model(object):
             print traceback.print_exc()
 
     def save(self):
-        self.session.add(self)
-        self.session.commit()
-        self.session.close()
+        try:
+            self.session.add(self)
+            self.session.commit()
+            self.session.close()
+        except:
+            print traceback.print_exc()
 
     def initialize_table(self):
         # temporary, until there's an easier setup interface

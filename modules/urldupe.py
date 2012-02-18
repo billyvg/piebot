@@ -7,10 +7,8 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, DateTime, Text, func
+from sqlalchemy import Column, Integer, String, DateTime, Text, func
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, backref
 
 from modules import *
 from models import Model
@@ -73,8 +71,8 @@ class Urldupe(Module):
             num_dupes = len(dupes)
             if num_dupes == 1:
                 rd = relativedelta(datetime.now(), dupes[0].time)
-                message = "%s: That url was already linked by \x02%s\x02 %s ago." % (
-                        event['nick'],
+                message = "%s: That url was already linked by %s %s ago." % (
+                        bold(event['nick']),
                         dupes[0].username,
                         self.pretty_time_duration(rd)
                         )

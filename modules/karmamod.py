@@ -4,15 +4,16 @@
 @syntax .karma <item>
 """
 import re
-from datetime import datetime
 
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, DateTime, Text, func
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
 from modules import *
 from models import Model
 
 Base = declarative_base()
+
+
 class Karma(Base, Model):
     __tablename__ = 'karma_karmas'
 
@@ -43,6 +44,7 @@ class Karma(Base, Model):
             self.session.commit()
         else:
             self.save()
+
 
 class Karmamod(Module):
 

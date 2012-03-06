@@ -3,12 +3,11 @@
 
 """
 
-import inspect
 import traceback
 import sys
 
-from modules import Module
 from handlers import Handler
+
 
 class ModuleHandler(Handler):
     """Class to handle modules: loading, reloading, unloading, autoloading"""

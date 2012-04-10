@@ -7,6 +7,7 @@ import re
 
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm.exc import NoResultFound
 
 from modules import *
 from models import Model
@@ -18,7 +19,7 @@ class Karma(Base, Model):
     __tablename__ = 'karma_karmas'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(100), nullable=False)
+    name = Column(String(250), nullable=False)
     source = Column(String(50), nullable=False)
     count = Column(Integer, nullable=False)
 
@@ -39,11 +40,14 @@ class Karma(Base, Model):
                 )
 
     def change_karma(self, val, **kwargs):
-        if self.get().count() > 0:
-            self.get().update({Karma.count: Karma.count + self.count})
-            self.session.commit()
-        else:
-            self.save()
+        try:
+            if self.get().count() > 0:
+                self.get().update({Karma.count: Karma.count + self.count})
+                self.session.commit()
+            else:
+                self.save()
+        except:
+            pass
 
 
 class Karmamod(Module):
@@ -59,8 +63,12 @@ class Karmamod(Module):
 
     def get_karma(self, event):
         karma = Karma(name=event['args'][0], source=event['target'])
-        result = karma.get().first()
-        self.msg(event['target'], '%s has %d karma.' % (event['args'][0], result.count))
+        try:
+            result = karma.get().one().count
+        except NoResultFound:
+            result = 0
+
+        self.msg(event['target'], '%s has %d karma.' % (event['args'][0], result))
 
     def parsekarma(self, event):
         inc_pattern = re.compile('([^ ]{2,})\+\+')

@@ -3,7 +3,7 @@
 
 @syntax quote <add/del/search> <nick/quote>
 """
-from sqlalchemy import Column, Integer, String, Text, func
+from sqlalchemy import Column, Integer, String, Text, func, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 
 from modules import *
@@ -18,10 +18,10 @@ class Quote(Base, Model):
 
     id = Column(Integer, primary_key=True)
     quote = Column(Text, nullable=False)
-    added_by = Column(String(50), nullable=False)
-    source = Column(String(50), nullable=False)
+    added_by = Column(String(250), nullable=False)
+    source = Column(String(250), nullable=False)
     time = Column(DateTime, default=func.now())
-    nickname = Column(String(50), nullable=True)
+    nickname = Column(String(250), nullable=True)
 
     def __init__(self, **kwargs):
         Model.__init__(self)

@@ -21,7 +21,7 @@ class Url(Base, Model):
 
     id = Column(Integer, primary_key=True)
     url = Column(Text, nullable=False)
-    time = Column(DateTime, default=func.now())
+    time = Column(DateTime, default=datetime.now)
     username = Column(String(50), nullable=False)
     channel = Column(String(50), nullable=False)
 
@@ -41,7 +41,7 @@ class Url(Base, Model):
 
         return self.session.query(Url).filter_by(
                     url=self.url, channel=self.channel
-                ).order_by(Url.time).all()
+                ).filter(Url.username != self.username).order_by(Url.time).all()
 
 
 class Urldupe(Module):
@@ -51,7 +51,7 @@ class Urldupe(Module):
 
         Module.__init__(self, kwargs=kwargs)
 
-        self.url_pattern = re.compile('http://[^ ]+')
+        self.url_pattern = re.compile('http://[^ #]+')
 
     def _register_events(self):
         self.add_event('pubmsg', 'urldupe')

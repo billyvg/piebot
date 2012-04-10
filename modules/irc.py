@@ -115,7 +115,7 @@ class Irc(Module):
         else:
             self.syntax_message(event['nick'], '.msg [nick/channel] <message>')
 
-    @command
+    @op
     def nick(self, event):
         """Changes the bot's nickname."""
 

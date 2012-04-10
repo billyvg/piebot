@@ -36,6 +36,7 @@ class ppbot(object):
         # initialize the databse
         self.engine = Db.engine
         self.session = Db.session
+        self.session.expire_on_commit = False
 
         # load configuration
         self.config = Configuration()
@@ -91,6 +92,12 @@ class ppbot(object):
         self.module_handler.load('Stock')
         self.module_handler.load('Urldupe')
         self.module_handler.load('Urbandictionary')
+        self.module_handler.load('Rottentomatoes')
+        self.module_handler.load('Karmamod')
+        self.module_handler.load('Yelp')
+        self.module_handler.load('Quotemod')
+        self.module_handler.load('Search')
+        self.module_handler.load('Isup')
 
 if __name__ == "__main__":
     parser = OptionParser()

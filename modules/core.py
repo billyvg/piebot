@@ -17,12 +17,13 @@ class Core(Module):
 
         # events
         self.add_event('welcome', 'welcome')
-        
+        self.add_event('disconnect', 'disconnected')
+
         # commands
         self.add_command('load')
         self.add_command('reload')
         self.add_command('raw')
-    
+
     @master
     def load(self, event):
         """Loads a module specified from IRC.
@@ -40,7 +41,7 @@ class Core(Module):
                     'Could not load module: %s' % event['args'][0])
         else:
             self.syntax_message(event['nick'], '.load <module>')
-        
+
     @master
     def reload(self, event):
         """Reloads a module specified from IRC.
@@ -62,27 +63,40 @@ class Core(Module):
                 self.notice(event['nick'], 
                     'Could not reload module: %s' % event['args'][0])
         else:
-            
+
             self.syntax_message(event['nick'], '.reload <module>')
-            
+
     @owner
     def raw(self, event):
         """Processes a raw python command from IRC.
-        
+
         @param the python command to run
-        
+
         """
         try:
             print ' '.join(event['args'])
             self.msg(event['target'], eval(' '.join(event['args'])))
         except Exception, e:
             print e
-            
+
     def welcome(self, event):
         """Event handler for when the bot connects to a server."""
-        
-        print "Connected to network: %s." % self.server.server_config.name
-        
-    	for channel in self.server.server_config.channels:
-    	    self.server.join(channel.name)
-        
+
+        try:
+            print "Connected to network: %s." % event['source']
+        except:
+            import traceback
+            traceback.print_exc()
+            print self.server
+            import pdb
+            pdb.set_trace()
+
+        for channel in self.server.server_config.channels:
+            self.server.join(channel.name)
+
+    def disconnected(self, event):
+        """Event handler for when the bot connects to a server."""
+
+        print "Disconnected from network %s." % event
+        # TODO : reconnect
+        self.server.connect(event['connection'].server, event['connection'].port, event['connection'].username, event['connection'].password)

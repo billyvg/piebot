@@ -35,7 +35,7 @@ class Karma(Base, Model):
         return "<Karma: %s=%s>" % (self.name, self.count)
 
     def get(self, **kwargs):
-        return self.session.query(Karma).filter_by(
+        return Model.session.query(Karma).filter_by(
                 name=self.name, source=self.source
                 )
 
@@ -43,7 +43,7 @@ class Karma(Base, Model):
         try:
             if self.get().count() > 0:
                 self.get().update({Karma.count: Karma.count + self.count})
-                self.session.commit()
+                Model.session.commit()
             else:
                 self.save()
         except:

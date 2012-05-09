@@ -37,12 +37,12 @@ class Quote(Base, Model):
     def get(self, **kwargs):
         """Return a quote by primary id."""
 
-        return self.session.query(Quote).get(self.id)
+        return Model.session.query(Quote).get(self.id)
 
     def find(self, term, **kwargs):
         """Looks for a quote."""
 
-        return self.session.query(Quote).filter(
+        return Model.session.query(Quote).filter(
                 Quote.quote.like("%%%s%%" % term)
                 ).order_by(Quote.time)
 

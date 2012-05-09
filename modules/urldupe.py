@@ -39,7 +39,7 @@ class Url(Base, Model):
     def get_dupes(self, **kwargs):
         """Checks if URL is in the database."""
 
-        return self.session.query(Url).filter_by(
+        return Model.session.query(Url).filter_by(
                     url=self.url, channel=self.channel
                 ).filter(Url.username != self.username).order_by(Url.time).all()
 

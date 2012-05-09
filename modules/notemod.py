@@ -80,9 +80,10 @@ class Notemod(Module):
     def parse_message(self, event):
         """ Checks to see if user has notes waiting for them """
 
-        notes = Note().find(event['nick'])
-        for note in notes.all():
-            n = Note(id=note.id)
-            self.notice(event['nick'], '%s told you some time ago: %s' % (note.added_by.split('!')[0], note.note))
-            note.inactive()
+        notes = Note().find(event['nick']).all()
+        if len(notes) > 0:
+            for note in notes:
+                n = Note(id=note.id)
+                self.notice(event['nick'], '%s told you some time ago: %s' % (note.added_by.split('!')[0], note.note))
+                note.inactive()
 

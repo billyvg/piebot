@@ -30,7 +30,6 @@ class Bitly(object):
 
         try:
             title = self.get_url_title(matched_url)
-        
             try:
                 d = self.youtube_pattern.search(matched_url)
                 if d:
@@ -68,7 +67,7 @@ class Bitly(object):
                 title = title.replace('\n', ' ')
                 title = title.replace('\r', ' ')
                 try:
-                    title.decode('utf-8')
+                    title = title.decode('utf-8')
                 except:
                     try: title = title.decode('iso-8859-1').encode('utf-8')
                     except: title = title.decode('cp1252').encode('utf-8')

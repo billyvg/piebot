@@ -88,7 +88,6 @@ class ppbot(object):
 
         self.module_handler.load('Irc')
         self.module_handler.load('Weather')
-        self.module_handler.load('Urlparser')
         self.module_handler.load('Stock')
         self.module_handler.load('Urldupe')
         self.module_handler.load('Urbandictionary')
@@ -98,6 +97,8 @@ class ppbot(object):
         self.module_handler.load('Quotemod')
         self.module_handler.load('Search')
         self.module_handler.load('Isup')
+        self.module_handler.load('Notemod')
+        self.module_handler.load('Urlparser')
 
 if __name__ == "__main__":
     parser = OptionParser()

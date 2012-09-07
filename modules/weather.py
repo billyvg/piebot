@@ -8,23 +8,27 @@ Will be using wunderground.com's API.
 
 """
 import urllib
-import urllib2
 import string
 import re
-from xml.dom.minidom import parseString
+import json
 
+import requests
+
+from config import BotConfig
 from modules import *
 
 
 class Weather(Module):
+    API_URL = 'http://api.wunderground.com/api/%s/conditions/q/%s.json'
 
     def __init__(self, *args, **kwargs):
         """Constructor"""
 
         Module.__init__(self, kwargs=kwargs)
 
+        # TODO throw exception if it doesn't exist
+        self.api_key = BotConfig().get('wunderground', 'api_key')
         # url for wunderground's api, forecast url
-        self.wurl = 'http://www.google.com/ig/api?weather=%s'
 
     def _register_events(self):
         """Register module commands."""
@@ -45,47 +49,34 @@ class Weather(Module):
                 try:
                     weather = self.get_weather(zipcode)
                     # stylize the message output
-                    message1 = "%(city)s (%(zipcode)s) - Currently: %(temp_f)sF (%(temp_c)sC) - Conditions: %(condition)s, %(humidity)s, %(wind)s" % (weather)
-                    message2 = "Today (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][0]
-                    message3 = "Tomorrow (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][1]
+                    message1 = "%(city)s (%(zipcode)s) - %(condition)s @ %(temp_f)sF (%(temp_c)sC) - Humidity: %(humidity)s, Winds: %(wind)s" % (weather)
+                    #message2 = "Today (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][0]
+                    #message3 = "Tomorrow (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][1]
                     # send the messages
                     self.msg(event['target'], message1)
-                    self.msg(event['target'], message2)
-                    self.msg(event['target'], message3)
+                    #self.msg(event['target'], message2)
+                    #self.msg(event['target'], message3)
                 except:
+                    import traceback
+                    traceback.print_exc()
                     self.msg(event['target'], 'Could not get weather data for "%s"' % zipcode)
         else:
             self.syntax_message(event['nick'], '.w <zipcode>')
 
     def get_weather(self, zipcode):
-        """Connects to google's secret weather API and parses the receiving XML for the weather."""
+        """Connects to weather API and parses for the weather."""
 
         # make the parser, and send the xml to be parsed
-        xml = urllib2.urlopen(self.wurl % urllib.quote_plus(zipcode)).read()
-        xml = string.replace(xml, '<?xml version="1.0"?>', '')
-        dom = parseString(xml)
-        weather = {}
-        forecast = []
+        data = {}
+        r = requests.get(self.__class__.API_URL % (self.api_key, urllib.quote_plus(zipcode)))
+        resp = json.loads(r.text)
+        obs = resp['current_observation']
 
-        forecast_information = dom.getElementsByTagName('forecast_information')[0]
-        current_conditions = dom.getElementsByTagName('current_conditions')[0]
-        forecast_conditions = dom.getElementsByTagName('forecast_conditions')
-
-        weather['city'] = forecast_information.getElementsByTagName('city')[0].getAttribute('data')
-        weather['zipcode'] = forecast_information.getElementsByTagName('postal_code')[0].getAttribute('data')
-        weather['condition'] = current_conditions.getElementsByTagName('condition')[0].getAttribute('data')
-        weather['wind'] = current_conditions.getElementsByTagName('wind_condition')[0].getAttribute('data')
-        weather['humidity'] = current_conditions.getElementsByTagName('humidity')[0].getAttribute('data')
-        weather['temp_f'] = current_conditions.getElementsByTagName('temp_f')[0].getAttribute('data')
-        weather['temp_c'] = current_conditions.getElementsByTagName('temp_c')[0].getAttribute('data')
-
-        for x in forecast_conditions:
-            fc_temp = {}
-            fc_temp['day'] = x.getElementsByTagName('day_of_week')[0].getAttribute('data')
-            fc_temp['low'] = x.getElementsByTagName('low')[0].getAttribute('data')
-            fc_temp['high'] = x.getElementsByTagName('high')[0].getAttribute('data')
-            fc_temp['condition'] = x.getElementsByTagName('condition')[0].getAttribute('data')
-            forecast.append(fc_temp)
-
-        weather['forecast'] = forecast
-        return weather
+        data['city'] = obs['display_location']['full']
+        data['zipcode'] = obs['display_location']['zip']
+        data['temp_f'] = obs['temp_f']
+        data['temp_c'] = obs['temp_c']
+        data['condition'] = obs['weather']
+        data['humidity'] = obs['relative_humidity']
+        data['wind'] = obs['wind_string']
+        return data

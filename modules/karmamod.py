@@ -5,7 +5,7 @@
 """
 import re
 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -19,7 +19,7 @@ class Karma(Base, Model):
     __tablename__ = 'karma_karmas'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    name = Column(Text, nullable=False)
     source = Column(String(50), nullable=False)
     count = Column(Integer, nullable=False)
 

@@ -65,9 +65,9 @@ class ModuleHandler(Handler):
             # also do something similar for events
             for event_type, action in module.events.iteritems():
                 try:
-                    self.events[event_type][action] = name
-                except:
-                    self.events[event_type] = {action: name}
+                    self.events[event_type][name] = action
+                except KeyError:
+                    self.events[event_type] = {name: action}
 
             return module
         except:

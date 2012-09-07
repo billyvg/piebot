@@ -61,7 +61,7 @@ class EventHandler(Handler):
 
         try:
             # look through the events dict in the modulehandler class
-            for action, module in self.module_handler.events[event.eventtype()].iteritems():
+            for module, action in self.module_handler.events[event.eventtype()].iteritems():
                 self.module_handler.modules[module].handle(action, parsed_event)
         except:
             pass

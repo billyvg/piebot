@@ -40,8 +40,6 @@ class Search(Module):
         except:
             import traceback
             traceback.print_exc()
-            import pdb
-            pdb.set_trace()
 
     def ajax_search(self, term):
         """Connects to google's ajax search api to perform a search."""

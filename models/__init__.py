@@ -22,6 +22,7 @@ class Model(object):
             Model.session.close()
         except:
             Model.session.rollback()
+            Model.session.close()
             print traceback.print_exc()
 
     def initialize_table(self):

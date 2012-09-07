@@ -75,7 +75,7 @@ class Notemod(Module):
 
             note.save()
 
-            self.msg(event['target'], '%s: Note added.' % (event['nick']))
+            self.notice(event['source'], '%s: Note added.' % (event['nick']))
 
     def parse_message(self, event):
         """ Checks to see if user has notes waiting for them """

@@ -21,7 +21,7 @@ from models.network import Network
 from models.server import Server
 from models.channel import Channel
 
-from http import core as httpcore
+from http.core import app as httpcore
 
 from db import Db
 

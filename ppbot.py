@@ -8,6 +8,10 @@ import traceback
 from optparse import OptionParser
 
 import irclib
+import gevent
+from gevent import monkey; monkey.patch_all()
+from gevent import wsgi
+from pong import application
 
 from handlers.modulehandler import ModuleHandler
 from handlers.eventhandler import EventHandler
@@ -16,6 +20,8 @@ from models.configuration import Configuration
 from models.network import Network
 from models.server import Server
 from models.channel import Channel
+
+from http import core as httpcore
 
 from db import Db
 
@@ -29,6 +35,7 @@ class ppbot(object):
         use them.
 
         """
+        self.ircloop_timeout = 0.5
 
         self.irc = irclib.IRC()
         self.servers = []
@@ -75,8 +82,13 @@ class ppbot(object):
                 print "<<Error>> Couldn't connect to %s:%s" % (server_config.address, server_config.port)
 
         # jump into an infinite loop
-        self.irc.process_forever()
-		
+        jobs = [gevent.spawn(self.irc.process_forever)]
+        gevent.joinall(jobs)
+
+    def _run(self):
+        self.irc.process_once(self.ircloop_timeout)
+        gevent.sleep(self.ircloop_timeout)
+
     def load_modules(self):
         """ for now we will manually load modules, but this will eventually 
         call the database for what modules to auto-load
@@ -116,6 +128,7 @@ if __name__ == "__main__":
     config = BotConfig()
     irclib.DEBUG = config.getboolean('debug', 'irclib')
 
-    bot = ppbot()
-    bot.connect()
+    server = wsgi.WSGIServer(('', 8088), httpcore)
 
+    bot = ppbot()
+    gevent.joinall([gevent.spawn(bot.connect), gevent.spawn(server.serve_forever)])

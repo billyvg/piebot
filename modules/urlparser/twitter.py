@@ -15,7 +15,7 @@ class Twitter(object):
         Implement commands for Twitter functionality
 
     """
-    pattern = re.compile("http(?:s|)://(?:mobile\.|)(?:www\.|)twitter.com/(?:#!/|)[^/]+/status/([0-9]+)")
+    pattern = re.compile("http(?:s|)://(?:mobile\.|)(?:www\.|)twitter.com/(?:#!/|)[^/]+/status(?:es|)/([0-9]+)")
 
     def __init__(self, *args, **kwargs):
         """Constructor."""

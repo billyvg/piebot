@@ -11,7 +11,6 @@ import irclib
 import gevent
 from gevent import monkey; monkey.patch_all()
 from gevent import wsgi
-from pong import application
 
 from handlers.modulehandler import ModuleHandler
 from handlers.eventhandler import EventHandler

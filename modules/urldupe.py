@@ -62,9 +62,10 @@ class Urldupe(Module):
         m = self.url_pattern.search(event['message'])
 
         if m:
+            match = m.group(0).rstrip('/')
             # check if this url has been posted before
             url = Url(
-                url=m.group(0),
+                url=match,
                 username=event['nick'],
                 channel=event['target']
             )

@@ -28,6 +28,7 @@ class Irc(Module):
         self.add_command('voice')
         self.add_command('debug')
         self.add_command('python')
+        self.add_event('invite', 'on_invite')
 
     def debug(self, event):
         print self.commands
@@ -183,3 +184,6 @@ class Irc(Module):
             self.server.mode(event['target'], '+v %s' % event['args'][0])
         else:
             self.syntax_message(event['nick'], '.voice <nick>')
+
+    def on_invite(self, event):
+        self.server.join(event['message'])

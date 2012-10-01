@@ -32,7 +32,6 @@ class Yelp(Module):
         try:
             resp = self.query(term)
             resp = resp['businesses'][0]
-            print resp
 
             result = {
                     'name': resp['name'],
@@ -48,8 +47,10 @@ class Yelp(Module):
             message = '%(name)s (%(rating).2f w/ %(review_count)d reviews) @ %(address)s, %(city)s - (%(area_code)s) %(phone)s. %(url)s' % result
             self.msg(event['target'], message.encode('utf-8'))
         except KeyError:
+            print resp
             self.msg(event['target'], 'Could not find "%s" on Yelp.' % term)
         except IndexError:
+            print resp
             pass
 
     def query(self, term, location='San Francisco', **kwargs):

@@ -110,6 +110,7 @@ class ppbot(object):
         self.module_handler.load('Isup')
         self.module_handler.load('Notemod')
         self.module_handler.load('Urlparser')
+        self.module_handler.load('Github')
 
 if __name__ == "__main__":
     parser = OptionParser()

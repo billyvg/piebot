@@ -1,8 +1,8 @@
 Flask>=0.9
 SQLAlchemy>=0.7.2
 Unidecode>=0.04.7
+envoy>=0
 gdata>=2.0.14
-gevent>=0.13.8
 greenlet>=0.4.0
 pika>=0.9.5
 psycopg2>=2.4.1
@@ -11,3 +11,4 @@ python-irclib>=0.4.6
 wsgiref>=0.1.2
 python-yelp>=0.1.1
 requests>=0.10.2
+gevent>=1.0

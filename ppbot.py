@@ -49,7 +49,7 @@ class ppbot(object):
         self.config.session_start()
 
         # initialize the module handler
-        self.module_handler = ModuleHandler(self.servers, self.irc)
+        self.module_handler = ModuleHandler(self.servers, self.irc, httpcore=httpcore)
         # initialize the event handler
         self.event_handler = EventHandler(self.servers)
         self.event_handler.module_handler = self.module_handler

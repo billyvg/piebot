@@ -68,6 +68,7 @@ class Module:
         self.events = {}
         # dict of commands that the module has registered
         self.commands = {}
+        self.http_routes = {}
         self.num_args = 0
         self._register_events()
         self.irc = kwargs['kwargs']['irc']
@@ -100,6 +101,20 @@ class Module:
             action = command
 
         self.commands[command] = action
+
+    def add_http_route(self, handler, **kwargs):
+        """Adds an http route for module"""
+
+        try:
+            route_name = kwargs['name']
+        except KeyError:
+            route_name = self.__class__.__name__.lower()
+        try:
+            methods = kwargs['methods']
+        except KeyError:
+            methods = ['GET', 'POST']
+
+        self.http_routes[route_name] = {'handler': handler, 'methods': methods}
 
     def handle(self, action, event):
         """Calls the function that a command was bound to."""

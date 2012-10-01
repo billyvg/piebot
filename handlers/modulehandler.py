@@ -12,7 +12,7 @@ from handlers import Handler
 class ModuleHandler(Handler):
     """Class to handle modules: loading, reloading, unloading, autoloading"""
 
-    def __init__(self, server, irc):
+    def __init__(self, server, irc, httpcore, **kwargs):
         """Constructor
 
         @param the irclib server object
@@ -21,9 +21,11 @@ class ModuleHandler(Handler):
 
         self.server = server
         self.irc = irc
+        self.httpcore = httpcore
         self.modules = {}
         self.commands = {}
         self.events = {}
+        self.http_routes = {}
 
     def load(self, name, class_name=None):
         """Loads a module.
@@ -69,6 +71,13 @@ class ModuleHandler(Handler):
                 except KeyError:
                     self.events[event_type] = {name: action}
 
+            for route_name, action in module.http_routes.iteritems():
+                if route_name in self.http_routes:
+                    raise "Route already exists!"
+                self.http_routes[route_name] = action
+
+            self.make_routes()
+
             return module
         except:
             print "Error instanciating class/module"
@@ -98,3 +107,9 @@ class ModuleHandler(Handler):
                 print "Could not reload module: %s" % module
                 print traceback.print_exc()
                 return False
+
+    def make_routes(self):
+        """Creates http routes."""
+
+        for route, route_info in self.http_routes.iteritems():
+            self.httpcore.add_url_rule('/module/%s' % route, route, route_info['handler'], methods=route_info['methods'])

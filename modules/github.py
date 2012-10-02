@@ -22,7 +22,7 @@ class Github(Module):
     def postreceive(self):
         hook_ips = ['207.97.227.253', '50.57.128.197', '108.171.174.178']
         if request.remote_addr in hook_ips:
-            r = envoy.run('git pull --rebase')
+            r = envoy.run('git pull')
             print r.std_out
             return 'ok'
 

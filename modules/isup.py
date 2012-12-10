@@ -32,6 +32,8 @@ class Isup(Module):
                 r = requests.get(self.url % (domain))
                 if re.search('Is Down ->', r.text):
                     message = "%s is DOWN" % domain
+                elif re.search('interwho', r.text):
+                    message = "%s is INVALID" % domain
                 else:
                     message = "%s is UP" % domain
 

@@ -84,6 +84,6 @@ class Notemod(Module):
         if len(notes) > 0:
             for note in notes:
                 n = Note(id=note.id)
-                self.notice(event['nick'], '%s told you some time ago: %s' % (note.added_by.split('!')[0], note.note))
+                self.notice(event['nick'], '%s told you some time ago: %s' % (note.added_by.split('!')[0], note.note.encode('ascii', 'ignore')))
                 note.inactive()
 

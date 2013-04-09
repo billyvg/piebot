@@ -61,6 +61,7 @@ class Karmamod(Module):
         self.add_command('karma', 'get_karma')
         self.add_event('pubmsg', 'parsekarma')
 
+    @op
     def get_karma(self, event):
         karma = Karma(name=event['args'][0], source=event['target'])
         try:

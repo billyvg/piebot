@@ -1,0 +1,7 @@
+DEBUG = False
+
+# MongoDB settings
+MONGO_DB = 'ppbot'
+MONGO_PASSWORD = ''
+MONGO_HOST = 'localhost'
+MONGO_PORT = '27012'

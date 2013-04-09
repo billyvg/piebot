@@ -1,6 +1,7 @@
 import re
 import urllib2
 import traceback
+from HTMLParser import HTMLParser
 
 try:
     import simplejson as json
@@ -22,9 +23,10 @@ class Twitter(object):
         pass
 
     def handle(self, match, **kwargs):
+        h = HTMLParser()
         try:
             data = self.fetch (match.group(1))
-            return '\x02%s\x02 tweets "%s"' % (data['user']['name'], ''.join(data['text'].splitlines()))
+            return '\x02%s\x02 tweets "%s"' % (data['user']['name'], h.unescape(''.join(data['text'].splitlines())))
         except:
             print "Problem fetching tweet"
             print traceback.print_exc()

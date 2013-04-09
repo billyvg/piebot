@@ -49,7 +49,11 @@ class Weather(Module):
                 try:
                     weather = self.get_weather(zipcode)
                     # stylize the message output
-                    message1 = "%(city)s (%(zipcode)s) - %(condition)s @ %(temp_f)sF (%(temp_c)sC) - Humidity: %(humidity)s, Winds: %(wind)s" % (weather)
+                    try:
+                        message1 = "%(city)s (%(zipcode)s) - %(condition)s @ %(temp_f)sF (%(temp_c)sC) - Humidity: %(humidity)s, Winds: %(wind)s" % (weather)
+                    except:
+                        message1 = "%(city)s - %(condition)s @ %(temp_f)sF (%(temp_c)sC) - Humidity: %(humidity)s, Winds: %(wind)s" % (weather)
+
                     #message2 = "Today (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][0]
                     #message3 = "Tomorrow (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][1]
                     # send the messages
@@ -68,15 +72,20 @@ class Weather(Module):
 
         # make the parser, and send the xml to be parsed
         data = {}
-        r = requests.get(self.__class__.API_URL % (self.api_key, urllib.quote_plus(zipcode)))
+        r = requests.get(self.__class__.API_URL % (self.api_key, zipcode.replace(' ', '_')))
         resp = json.loads(r.text)
-        obs = resp['current_observation']
+        try:
+            obs = resp['current_observation']
 
-        data['city'] = obs['display_location']['full']
-        data['zipcode'] = obs['display_location']['zip']
-        data['temp_f'] = obs['temp_f']
-        data['temp_c'] = obs['temp_c']
-        data['condition'] = obs['weather']
-        data['humidity'] = obs['relative_humidity']
-        data['wind'] = obs['wind_string']
-        return data
+            data['city'] = obs['display_location']['full']
+            data['zipcode'] = obs['display_location']['zip']
+            data['temp_f'] = obs['temp_f']
+            data['temp_c'] = obs['temp_c']
+            data['condition'] = obs['weather']
+            data['humidity'] = obs['relative_humidity']
+            data['wind'] = obs['wind_string']
+
+            return data
+        except KeyError:
+            print 'no current_obs'
+            print resp

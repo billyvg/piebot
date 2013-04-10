@@ -21,8 +21,10 @@ protocol_events = [
 """
 
 from models.configuration import Configuration
+from db import db
 from handlers import Handler
 
+trigger = db.configuration.find_one({'key': 'trigger'})['value']
 
 class EventHandler(Handler):
     """Class to handle irc events."""
@@ -74,9 +76,6 @@ class EventHandler(Handler):
         @param an irclib event
 
         """
-
-        config = Configuration()
-        trigger = config.val("trigger")
 
         # check to see if a command was called
         if trigger == event['trigger']:

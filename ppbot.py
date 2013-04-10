@@ -15,16 +15,16 @@ from gevent import wsgi
 from handlers.modulehandler import ModuleHandler
 from handlers.eventhandler import EventHandler
 
-from models.configuration import Configuration
-from models.network import Network
-from models.server import Server
-from models.channel import Channel
+#from models.configuration import Configuration
+#from models.network import Network
+#from models.server import Server
+#from models.channel import Channel
 
 from http.core import app as httpcore
 
-from db import Db
+from db import db
+import settings
 
-from config import BotConfig
 
 class ppbot(object):
 
@@ -39,14 +39,9 @@ class ppbot(object):
         self.irc = irc.client.IRC()
         self.servers = []
 
-        # initialize the databse
-        self.engine = Db.engine
-        self.session = Db.session
-        self.session.expire_on_commit = False
-
         # load configuration
-        self.config = Configuration()
-        self.config.session_start()
+        #self.config = Configuration()
+        #self.config.session_start()
 
         # initialize the module handler
         self.module_handler = ModuleHandler(self.servers, self.irc, httpcore=httpcore)
@@ -77,7 +72,7 @@ class ppbot(object):
             server_config = network.servers[0]
             try:
                 server.connect(server_config.address, server_config.port, server_config.nickname, server_config.password, ircname=server_config.realname)
-            except irclib.ServerConnectionError, e:
+            except irc.ServerConnectionError, e:
                 print "<<Error>> Couldn't connect to %s:%s" % (server_config.address, server_config.port)
 
         # jump into an infinite loop

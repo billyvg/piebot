@@ -9,7 +9,7 @@ except ImportError:
     import json
 from unidecode import unidecode
 
-from config import BotConfig
+import settings
 
 class Bitly(object):
     """Checks incoming messages for possible urls.  If a url is found then
@@ -38,7 +38,7 @@ class Bitly(object):
                 return "%s .:. %s" % (short_url, title)
             except:
                 pass
-                # need some proper logging =[
+            # need some proper logging =[
         except:
             pass
 
@@ -55,7 +55,7 @@ class Bitly(object):
         req.add_header('User-Agent', USER_AGENT)
         response = urllib2.urlopen(req)
         page = response.read()
-        
+
         # check if page type is text/html
         if response.info().type == 'text/html' or response.info().type == 'application/xhtml+xml':
             regex = '<title[^>]*>(.*?)</title>'
@@ -98,13 +98,12 @@ class Bitly(object):
         """Uses bit.ly's API to shorten a URL"""
 
         # first setup some options for bitly
-        config = BotConfig()
-        api_key = config.get('bitly', 'api_key')
-        api_login = config.get('bitly', 'api_login')
+        api_key = settings.BITLY_API_KEY
+        api_login = settings.BITLY_API_LOGIN
         api_url = 'http://api.bit.ly/v3/shorten?&login=%s&apiKey=%s&longUrl=%s' % (
-                        api_login, api_key,
-                        string.replace(url, '&', '%26')
-                    )
+                api_login, api_key,
+                string.replace(url, '&', '%26')
+                )
 
         req = urllib2.Request(api_url)
         response = urllib2.urlopen(req)

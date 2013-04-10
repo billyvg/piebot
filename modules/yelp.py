@@ -10,7 +10,7 @@ import requests
 import oauth2 as oauth
 
 
-from config import BotConfig
+import settings
 from modules import *
 
 class Yelp(Module):
@@ -62,11 +62,10 @@ class Yelp(Module):
 
     def get_signed_url(self, url, params):
         try:
-            config = BotConfig()
-            consumer_key = config.get('yelp', 'consumer_key')
-            consumer_secret = config.get('yelp', 'consumer_secret')
-            token = config.get('yelp', 'token')
-            token_secret = config.get('yelp', 'token_secret')
+            consumer_key = YELP_CONSUMER_KEY
+            consumer_secret = YELP_CONSUMER_SECRET
+            token = YELP_TOKEN
+            token_secret = YELP_TOKEN_SECRET
         except NoOptionError:
             print "Error: You need to set your yelp API keys!"
 

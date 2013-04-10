@@ -14,7 +14,7 @@ import json
 
 import requests
 
-from config import BotConfig
+import settings
 from modules import *
 
 
@@ -27,7 +27,7 @@ class Weather(Module):
         Module.__init__(self, kwargs=kwargs)
 
         # TODO throw exception if it doesn't exist
-        self.api_key = BotConfig().get('wunderground', 'api_key')
+        self.api_key = settings.WUNDERGROUND_API
         # url for wunderground's api, forecast url
 
     def _register_events(self):

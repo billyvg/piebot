@@ -4,7 +4,7 @@
 Module for our bot's modules.  Contains the base module class.
 """
 import traceback
-from db import db
+from db import db, module_db
 
 # define some decorators here, to be used by modules for access control
 def access(*a, **kw):
@@ -64,6 +64,7 @@ class Module:
         self.num_args = 0
         self._register_events()
         self.irc = kwargs['kwargs']['irc']
+        self.db = module_db
 
     def _register_events(self):
         """Registers an event so that the eventhandler can pass the module

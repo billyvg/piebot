@@ -9,9 +9,8 @@ import urllib
 import requests
 import json
 
-from config import BotConfig
+import settings
 from modules import *
-
 
 class Rottentomatoes(Module):
     API_URL = 'http://api.rottentomatoes.com/api/public/v1.0/movies.json?%s'
@@ -19,7 +18,7 @@ class Rottentomatoes(Module):
     def __init__(self, *args, **kwargs):
         """Constructor"""
         Module.__init__(self, kwargs=kwargs)
-        self.api_key = BotConfig().get('rt', 'api_key')
+        self.api_key = settings.RT_API
 
     def _register_events(self):
         """Register module commands."""

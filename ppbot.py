@@ -111,20 +111,16 @@ class ppbot(object):
 
 if __name__ == "__main__":
     parser = OptionParser()
-    parser.add_option('-i', '--init-db', dest='initdb', action='store_true',
-                        help='Initialize the database.')
+    #parser.add_option('-i', '--init-db', dest='initdb', action='store_true',
+                        #help='Initialize the database.')
     # parser.add_option('-c', '--config', dest='config_file', action='store',
     #                     type='string', default='ppbot.cfg', help='Initialize the database.')
 
     (options, args) = parser.parse_args()
 
-
-    if options.initdb:
-        Db().init_db()
-
     irc.DEBUG = settings.DEBUG
 
-    server = wsgi.WSGIServer(('', 8088), httpcore)
+    server = wsgi.WSGIServer(('', settings.HTTP_PORT), httpcore)
 
     bot = ppbot()
     gevent.joinall([gevent.spawn(bot.connect), gevent.spawn(server.serve_forever)])

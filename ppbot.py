@@ -71,7 +71,7 @@ class ppbot(object):
             # try to connect to.
             server_config = db.servers.find_one({'network': network['name']})
             try:
-                server.connect(server_config['address'], server_config['port'], server_config['nickname'], server_config['password'], ircname=server_config['realname'])
+                server.connect(server_config['address'], server_config['port'], server_config['nickname'], server_config['password'])
             except:
                 import traceback
                 traceback.print_exc()

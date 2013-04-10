@@ -58,7 +58,7 @@ class ppbot(object):
     def connect(self):
         """ Create a server object, connect and join the channel. """
 
-        networks = Network().val()
+        networks = db.networks.find()
 
         for network in networks:
             # connect to the server
@@ -69,11 +69,13 @@ class ppbot(object):
             # TODO: should be using a queue for the servers to go through, 
             # since it could be possible to have more than one server to 
             # try to connect to.
-            server_config = network.servers[0]
+            server_config = db.servers.find_one({'network': network['name']})
             try:
-                server.connect(server_config.address, server_config.port, server_config.nickname, server_config.password, ircname=server_config.realname)
-            except irc.ServerConnectionError, e:
-                print "<<Error>> Couldn't connect to %s:%s" % (server_config.address, server_config.port)
+                server.connect(server_config['address'], server_config['port'], server_config['nickname'], server_config['password'], ircname=server_config['realname'])
+            except:
+                import traceback
+                traceback.print_exc()
+                print "<<Error>> Couldn't connect to %s:%s" % (server_config['address'], server_config['port'])
 
         # jump into an infinite loop
         jobs = [gevent.spawn(self.irc.process_forever)]

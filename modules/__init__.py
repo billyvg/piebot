@@ -4,39 +4,39 @@
 Module for our bot's modules.  Contains the base module class.
 """
 import traceback
-from db import Db
+from db import db
 
-from models.user import *
-
-session = Db.session
 # define some decorators here, to be used by modules for access control
 def access(*a, **kw):
     def check_access(f, *args, **kwargs):
         def new_f(*args, **kwargs):
             try:
                 # query the database to check to see if the user is a master or owner
-                query = session.query(User).filter(User.name == args[1]['nick'])
-                user = query.first()
+                #query = session.query(User).filter(User.name == args[1]['nick'])
+                #user = query.first()
+                pass
             except Exception, e:
                 print "query error: ", e
             # check to see if we receive a result from the database and that
             # their access level meets the minimum access level
             else:
-                if user and user.access >= a[0]:
-                    return f(*args, **kwargs)
+                pass
+                #if user and user.access >= a[0]:
+                    #return f(*args, **kwargs)
         new_f.func_name = f.func_name
         return new_f
     return check_access
 
 # shortcut decorators for some main access levels
-levels = session.query(Access).order_by(Access.access)
+levels = db.access_levels.find().sort('level', 1)
 
 # here's a hack to dynamically generate decorators from access levels
 # that are defined in the database.
 level_lambdas = {}
 def decorator_generator():
-    def hack(i): level_lambdas[i.access] = lambda f: access(i.id)(f)
+    def hack(i): level_lambdas[i['name']] = lambda f: access(i['level'])(f)
     return [hack(i) for i in levels]
+
 decorator_generator()
 for f in level_lambdas:
     vars()[f] = level_lambdas[f]
@@ -48,14 +48,6 @@ def command(f):
         module = getattr(sys.modules[f.__module__], 'Module')
         return f(*args, **kwargs)
     return new
-    #print dir(module)
-    #add_command = getattr(module, 'add_command')
-    #add_command(module, f.__name__)
-    #print module
-    #print f.__name__
-    #module.commands[f.__name__] = f.__name__
-    #module.add_command(f.__name__)
-    #return f
 
 class Module:
     """The base module class where all of our modules will be derived from."""

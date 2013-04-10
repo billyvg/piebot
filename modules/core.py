@@ -91,8 +91,8 @@ class Core(Module):
             import pdb
             pdb.set_trace()
 
-        for channel in self.server.server_config.channels:
-            self.server.join(channel.name)
+        for channel in db.channels.find({'network': self.server.server_config['name']}):
+            self.server.join(channel['name'])
 
     def disconnected(self, event):
         """Event handler for when the bot connects to a server."""

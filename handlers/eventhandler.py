@@ -56,12 +56,12 @@ class EventHandler(Handler):
 
         parsed_event = self.parse_event(event, connection)
 
-        if event.eventtype() in allmsgs:
+        if event.type in allmsgs:
             self.message_handler(parsed_event)
 
         try:
             # look through the events dict in the modulehandler class
-            for module, action in self.module_handler.events[event.eventtype()].iteritems():
+            for module, action in self.module_handler.events[event.type].iteritems():
                 self.module_handler.modules[module].handle(action, parsed_event)
         except:
             pass
@@ -103,10 +103,10 @@ class EventHandler(Handler):
 
         module_args = {}
         # target is who (private message) or what (channel) the event is directed towards
-        target = event.target()
+        target = event.target
 
         # source is where the event came from
-        source = event.source()
+        source = event.source
 
         # get the entire message and split it by spaces
         try:
@@ -138,7 +138,7 @@ class EventHandler(Handler):
         except:
             pass
         module_args['connection'] = connection
-        module_args['eventtype'] = event.eventtype()
+        module_args['eventtype'] = event.type
         module_args['num_args'] = num_args
 
         return module_args

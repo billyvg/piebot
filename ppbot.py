@@ -7,7 +7,7 @@ TODO: Lots
 import traceback
 from optparse import OptionParser
 
-import irclib
+import irc.client
 import gevent
 from gevent import monkey; monkey.patch_all()
 from gevent import wsgi
@@ -36,7 +36,7 @@ class ppbot(object):
         """
         self.ircloop_timeout = 0.5
 
-        self.irc = irclib.IRC()
+        self.irc = irc.client.IRC()
         self.servers = []
 
         # initialize the databse
@@ -125,8 +125,7 @@ if __name__ == "__main__":
     if options.initdb:
         Db().init_db()
 
-    config = BotConfig()
-    irclib.DEBUG = config.getboolean('debug', 'irclib')
+    irc.DEBUG = settings.DEBUG
 
     server = wsgi.WSGIServer(('', 8088), httpcore)
 

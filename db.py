@@ -34,4 +34,4 @@ class ModuleCollection(collection.Collection):
 client = mongo_client.MongoClient(MONGO_HOST, MONGO_PORT)
 db = client[MONGO_DB]
 module_client = ModuleMongoClient(MONGO_HOST, MONGO_PORT)
-module_db = client[MONGO_DB]
+module_db = module_client[MONGO_DB]

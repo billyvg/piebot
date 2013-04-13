@@ -14,7 +14,7 @@ class ModuleMongoClient(mongo_client.MongoClient):
     def __getattr__(self, name):
         attr = super(ModuleMongoClient, self).__getattr__(name)
         if isinstance(attr, database.Database):
-            return Database(self, name)
+            return ModuleDatabase(self, name)
         return attr
 
 class ModuleDatabase(database.Database):

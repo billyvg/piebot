@@ -109,8 +109,8 @@ class EventHandler(Handler):
 
         # get the entire message and split it by spaces
         try:
-            message = ' '.join(event.arguments())
-            args = event.arguments()[0].strip().split(' ')
+            message = ' '.join(event.arguments)
+            args = event.arguments[0].strip().split(' ')
             trigger = args[0][0]
             cmd = args.pop(0)[1:]
             num_args = len(args)
@@ -120,6 +120,7 @@ class EventHandler(Handler):
             args = ''
             cmd = ''
             num_args = 0
+            #import traceback
             #print traceback.print_exc()
 
         # this is the first part of the message, which will be the command

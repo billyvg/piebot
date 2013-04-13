@@ -7,3 +7,4 @@ build
 *.swo
 *.cfg
 settings.py
+bootstrap.py

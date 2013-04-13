@@ -30,7 +30,9 @@ class Urldupe(Module):
             'url': url,
             'channel': channel,
             'username': {
-                '$not': username
+                '$not': {
+                    '$eq': username
+                }
             }
         })
 

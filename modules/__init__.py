@@ -4,7 +4,7 @@
 Module for our bot's modules.  Contains the base module class.
 """
 import traceback
-from db import db, module_db
+from db import db
 
 # define some decorators here, to be used by modules for access control
 def access(*a, **kw):
@@ -49,6 +49,16 @@ def command(f):
         return f(*args, **kwargs)
     return new
 
+
+class ModuleCollection:
+    def __init__(self, className):
+        self.className = className
+
+    def __getattr__(self, name):
+        _name = u"module_%s_%s" % (self.className, name)
+        return db[_name]
+
+
 class Module:
     """The base module class where all of our modules will be derived from."""
     #commands = {}
@@ -64,7 +74,7 @@ class Module:
         self.num_args = 0
         self._register_events()
         self.irc = kwargs['kwargs']['irc']
-        self.db = module_db
+        self.db = ModuleCollection(self.__class__.__name__)
 
     def _register_events(self):
         """Registers an event so that the eventhandler can pass the module

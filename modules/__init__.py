@@ -12,17 +12,15 @@ def access(*a, **kw):
         def new_f(*args, **kwargs):
             try:
                 # query the database to check to see if the user is a master or owner
-                #query = session.query(User).filter(User.name == args[1]['nick'])
-                #user = query.first()
-                pass
+                # TODO: fix
+                user = db.users.find_one({'name': args[1]['nick']})
             except Exception, e:
                 print "query error: ", e
             # check to see if we receive a result from the database and that
             # their access level meets the minimum access level
             else:
-                pass
-                #if user and user.access >= a[0]:
-                    #return f(*args, **kwargs)
+                if user and user['access'] >= a[0]:
+                    return f(*args, **kwargs)
         new_f.func_name = f.func_name
         return new_f
     return check_access

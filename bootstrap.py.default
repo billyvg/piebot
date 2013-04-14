@@ -31,17 +31,17 @@ if db.configuration.find().count() == 0:
 
 if db.access_levels.find().count() == 0:
     data = [{'level': 0,
-            'name': 'owner'},
-            {'level': 1,
-            'name': 'master'},
-            {'level': 2,
-            'name': 'op'},
-            {'level': 3,
-            'name': 'user'},
-            {'level': 4,
+            'name': 'all'},
+            {'level': 20,
             'name': 'guest'},
-            {'level': 5,
-            'name': 'all'}
+            {'level': 40,
+            'name': 'user'},
+            {'level': 60,
+            'name': 'op'},
+            {'level': 80,
+            'name': 'master'},
+            {'level': 100,
+            'name': 'owner'}
             ]
     db.access_levels.insert(data)
 

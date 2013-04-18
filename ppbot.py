@@ -63,6 +63,7 @@ class ppbot(object):
         for network in networks:
             # connect to the server
             server = self.irc.server()
+            server.buffer_class.errors = 'replace'
             self.servers.append(server)
             server.server_config = network
 

@@ -27,17 +27,18 @@ class Notemod(Module):
             data = {'note': ' '.join(event['args'][1:]),
                     'added_by': event['source'],
                     'time': datetime.now(),
-                    'target': event['args'][0]}
+                    'active': True,
+                    'target': event['args'][0].lower()}
             self.db.notes.insert(data)
-            self.notice(event['source'], '%s: Note added.' % (event['nick']))
+            self.notice(event['nick'], 'Note added for %s.' % (event['args'][0]))
 
     def parse_message(self, event):
         """ Checks to see if user has notes waiting for them """
 
-        notes = self.db.notes.find({'target': event['nick'], 'active': True}).sort('time', 0)
+        notes = self.db.notes.find({'target': event['nick'].lower(), 'active': True}).sort('time', 0)
         if notes.count() > 0:
             for note in notes:
                 self.notice(event['nick'], '%s told you some time ago: %s' % (note['added_by'].split('!')[0], note['note'].encode('ascii', 'ignore')))
-                self.db.notes.update({'_id': note['_id']}, {'active': False})
+                self.db.notes.update({'_id': note['_id']}, {'$set': {'active': False}})
 
 

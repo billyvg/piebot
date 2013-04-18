@@ -21,7 +21,7 @@ class Karmamod(Module):
 
     @op
     def get_karma(self, event):
-        karma = self.db.karma.find_one({'name': event['args'][0],
+        karma = self.db.karma.find_one({'name': event['args'][0].lower(),
             'source': event['target']})
         try:
             result = karma['count']
@@ -43,16 +43,16 @@ class Karmamod(Module):
     def change(self, event, name, value):
         """Change karma count."""
 
-        karma = self.db.karma.find_one({'name': name,
+        karma = self.db.karma.find_one({'name': name.lower(),
             'source': event['target']})
         # TODO: find way to insert if doesn't exist or else update?
         try:
             count = karma['count'] + value
-            self.db.karma.update({'name': name,
+            self.db.karma.update({'name': name.lower(),
                 'source': event['target']},
                 {'count': count})
         except TypeError, KeyError:
             count = value
-            self.db.karma.insert({'name': name,
+            self.db.karma.insert({'name': name.lower(),
                 'source': event['target'],
                 'count': count})

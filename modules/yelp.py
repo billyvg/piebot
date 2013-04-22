@@ -62,11 +62,13 @@ class Yelp(Module):
 
     def get_signed_url(self, url, params):
         try:
-            consumer_key = YELP_CONSUMER_KEY
-            consumer_secret = YELP_CONSUMER_SECRET
-            token = YELP_TOKEN
-            token_secret = YELP_TOKEN_SECRET
-        except NoOptionError:
+            consumer_key = settings.YELP_CONSUMER_KEY
+            consumer_secret = settings.YELP_CONSUMER_SECRET
+            token = settings.YELP_TOKEN
+            token_secret = settings.YELP_TOKEN_SECRET
+        except:
+            import traceback
+            traceback.print_exc()
             print "Error: You need to set your yelp API keys!"
 
         consumer = oauth.Consumer(key=consumer_key, secret=consumer_secret)

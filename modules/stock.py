@@ -49,7 +49,7 @@ class Stock(Module):
                 # send the messages
                 self.msg(event['target'], message1)
             except:
-                self.msg(event['target'], 'Could find symbol "%s"' % symbol)
+                self.msg(event['target'], 'Could not find symbol "%s"' % symbol)
                 import traceback
                 traceback.print_exc()
         else:

@@ -30,14 +30,16 @@ class Bitly(object):
 
         try:
             title = self.get_url_title(matched_url)
+			"""
             try:
                 d = self.youtube_pattern.search(matched_url)
                 if d:
                     matched_url = matched_url + "&hd=1"
                 short_url = self.get_short_url(matched_url)
-                return "%s .:. %s" % (short_url, title)
             except:
                 pass
+			"""
+			return ".:. %s" % (title)
             # need some proper logging =[
         except:
             pass

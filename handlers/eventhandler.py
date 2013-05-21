@@ -20,7 +20,6 @@ protocol_events = [
 ]
 """
 
-from models.configuration import Configuration
 from db import db
 from handlers import Handler
 

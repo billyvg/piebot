@@ -6,7 +6,6 @@
 import re
 
 from modules import *
-from models import Model
 
 class Karmamod(Module):
 

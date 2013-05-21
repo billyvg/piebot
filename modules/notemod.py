@@ -7,7 +7,6 @@
 from datetime import datetime
 
 from modules import *
-from models import Model
 
 class Notemod(Module):
 

@@ -8,7 +8,6 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from modules import *
-from models import Model
 from db import db
 
 class Urldupe(Module):

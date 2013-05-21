@@ -15,11 +15,6 @@ from gevent import wsgi
 from handlers.modulehandler import ModuleHandler
 from handlers.eventhandler import EventHandler
 
-#from models.configuration import Configuration
-#from models.network import Network
-#from models.server import Server
-#from models.channel import Channel
-
 from http.core import app as httpcore
 
 from db import db

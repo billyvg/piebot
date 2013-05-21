@@ -4,7 +4,6 @@
 @syntax quote <add/del/search> <nick/quote>
 """
 from modules import *
-from models import Model
 
 #id = Column(Integer, primary_key=True)
 #quote = Column(Text, nullable=False)

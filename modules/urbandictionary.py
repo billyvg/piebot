@@ -31,7 +31,8 @@ class Urbandictionary(Module):
 
             try:
                 definition = ur['list'][0]
-                definition['example'] = definition['example'].replace("\r", "").replace("\n", "")
+                definition['definition'] = definition['definition'].replace("\r", " ").replace("\n", " ")
+                definition['example'] = definition['example'].replace("\r", " ").replace("\n", " ")
                 message = "%(word)s (%(thumbs_up)d/%(thumbs_down)d): %(definition)s (ex: %(example)s)" % (definition)
                 self.msg(event['target'], message)
             except KeyError:

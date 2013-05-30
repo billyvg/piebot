@@ -29,7 +29,7 @@ class Urldupe(Module):
             'url': url,
             'channel': channel,
             'username': {
-                '$neq': username
+                '$ne': username
             }
         })
 

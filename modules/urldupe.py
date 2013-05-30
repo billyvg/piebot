@@ -17,7 +17,7 @@ class Urldupe(Module):
 
         Module.__init__(self, kwargs=kwargs)
 
-        self.url_pattern = re.compile('http://[^ #]+')
+        self.url_pattern = re.compile('http(?:s|)://[^ #]+')
 
     def _register_events(self):
         self.add_event('pubmsg', 'urldupe')

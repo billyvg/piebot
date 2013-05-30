@@ -38,6 +38,7 @@ class Urldupe(Module):
                 'username': username,
                 'channel': channel,
                 'time': datetime.now()}
+
         self.db.urls.insert(data)
 
     def urldupe(self, event):
@@ -51,20 +52,20 @@ class Urldupe(Module):
             dupes = self.get_dupes(match, event['nick'], event['target'])
 
             if dupes.count() == 1:
-                rd = relativedelta(datetime.now(), dupes[0].time)
-                message = "%s: That url was already linked by %s %s ago." % (
+                rd = relativedelta(datetime.now(), dupes[0]['time'])
+                message = "%s: That url was already linked by \x02%s\x02 %s ago." % (
                         event['nick'],
-                        dupes[0].username,
+                        dupes[0]['username'],
                         self.pretty_time_duration(rd)
                         )
                 self.msg(event['target'], message)
             elif dupes.count() > 1:
-                rd = relativedelta(datetime.now(), dupes[0].time)
+                rd = relativedelta(datetime.now(), dupes[0]['time'])
                 message = ("%s: That url has been linked %d times already"
                             " (first linked by \x02%s\x02 %s ago).") % (
                         event['nick'],
                         dupes.count(),
-                        dupes[0].username,
+                        dupes[0]['username'],
                         self.pretty_time_duration(rd)
                         )
                 self.msg(event['target'], message)

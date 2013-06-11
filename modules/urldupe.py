@@ -11,27 +11,39 @@ from modules import *
 from db import db
 
 class Urldupe(Module):
+    youtube_pattern = re.compile('(?:youtube.com/watch).*?v=([a-zA-Z0-9]+)')
+    url_pattern = re.compile('http(?:s|)://[^ #]+')
 
     def __init__(self, *args, **kwargs):
         """Constructor"""
 
         Module.__init__(self, kwargs=kwargs)
 
-        self.url_pattern = re.compile('http(?:s|)://[^ #]+')
-
     def _register_events(self):
         self.add_event('pubmsg', 'urldupe')
 
     def get_dupes(self, url, username, channel):
         """Checks if there is a dupe url already"""
-
-        return self.db.urls.find({
-            'url': url,
+        params = {
             'channel': channel,
             'username': {
                 '$ne': username
             }
-        })
+        }
+
+        m = Urldupe.youtube_pattern.search(url)
+        if m:
+            youtube_id = m.group(1)
+        else:
+            youtube_id = ''
+
+        params['$or'] = [{
+            'url': url
+        }, {
+            'youtube_id': youtube_id
+        }]
+
+        return self.db.urls.find(params)
 
     def save_url(self, url, username, channel):
         data = {'url': url,
@@ -39,12 +51,16 @@ class Urldupe(Module):
                 'channel': channel,
                 'time': datetime.now()}
 
+        m = Urldupe.youtube_pattern.search(url)
+        if m:
+            data['youtube_id'] = m.group(1)
+
         self.db.urls.insert(data)
 
     def urldupe(self, event):
         """Action to react/respond to chat messages."""
 
-        m = self.url_pattern.search(event['message'])
+        m = Urldupe.url_pattern.search(event['message'])
 
         if m:
             match = m.group(0).rstrip('/')

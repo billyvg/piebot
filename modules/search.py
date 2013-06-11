@@ -36,10 +36,12 @@ class Search(Module):
             # stylize the message output
             message = "%(titleNoFormatting)s - %(content)s - %(url)s" % (results)
             # send the messages
-            self.msg(event['target'], message.encode('utf-8'))
+            self.msg(event['target'], message.encode('ascii', 'ignore'))
         except:
             import traceback
+            print "Failed to search for %s - %s" % (search_term, results)
             traceback.print_exc()
+
 
     def ajax_search(self, term):
         """Connects to google's ajax search api to perform a search."""

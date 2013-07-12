@@ -34,7 +34,7 @@ class Urbandictionary(Module):
                 definition['definition'] = definition['definition'].replace("\r", " ").replace("\n", " ")
                 definition['example'] = definition['example'].replace("\r", " ").replace("\n", " ")
                 message = "%(word)s (%(thumbs_up)d/%(thumbs_down)d): %(definition)s (ex: %(example)s)" % (definition)
-                self.msg(event['target'], message)
+                self.msg(event['target'], message[:450])
             except KeyError:
                 self.msg(event['target'], 'Could find word "%s"' % ' '.join(event['args']))
         else:

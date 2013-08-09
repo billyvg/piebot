@@ -1,8 +1,6 @@
 # Information
 This project started as a school assignment which I will continue to
-work on for fun... I'm choosing to make pgsql as a requirement because
-I want to learn it and move away from mysql. Portability may be 
-something that I will worry about later.
+work on for fun...
 
 # Install
 ```

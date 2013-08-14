@@ -24,7 +24,7 @@ class Karmamod(Module):
             'source': event['target']})
         try:
             result = karma['count']
-        except KeyError:
+        except KeyError, TypeError:
             result = 0
 
         self.msg(event['target'], '%s has %d karma.' % (event['args'][0], result))
@@ -47,9 +47,14 @@ class Karmamod(Module):
         # TODO: find way to insert if doesn't exist or else update?
         try:
             count = karma['count'] + value
-            self.db.karma.update({'name': name.lower(),
-                'source': event['target']},
-                {'count': count})
+            self.db.karma.update({
+				'name': name.lower(),
+                'source': event['target']
+			}, {
+				'$set': {
+					'count': count
+				}
+			})
         except TypeError, KeyError:
             count = value
             self.db.karma.insert({'name': name.lower(),

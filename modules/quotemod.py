@@ -4,6 +4,7 @@
 @syntax quote <add/del/search> <nick/quote>
 """
 from modules import *
+from datetime import datetime
 
 #id = Column(Integer, primary_key=True)
 #quote = Column(Text, nullable=False)

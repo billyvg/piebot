@@ -1,5 +1,7 @@
 from modules import *
 
+import irc.client
+
 class Core(Module):
     """Core Module to provide chat commands for core functionality of 
     ppbot.
@@ -99,4 +101,10 @@ class Core(Module):
 
         print "Disconnected from network %s." % event
         # TODO : reconnect
-        self.server.connect(event['connection'].server, event['connection'].port, event['connection'].username, event['connection'].password)
+        self._reconnect(event['connection'])
+
+    def _reconnect(self, connection):
+        try:
+	    self.server.connect(connection.server, connection.port, connection.username, connection.password)
+        except irc.client.ServerConnectionError:
+            self._reconnect(connection)

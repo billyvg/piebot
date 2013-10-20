@@ -90,7 +90,7 @@ class ppbot(object):
         core = self.module_handler.load('Core')
         core.module_handler = self.module_handler
 
-        self.module_handler.load('Irc')
+        self.module_handler.load('Coreirc')
         self.module_handler.load('Weather')
         self.module_handler.load('Stock')
         self.module_handler.load('Urldupe')

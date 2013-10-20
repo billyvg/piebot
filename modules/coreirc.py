@@ -1,7 +1,7 @@
 from modules import *
 
 
-class Irc(Module):
+class Coreirc(Module):
     """IRC Module to provide chat commands for common IRC actions."""
 
     def __init__(self, *args, **kwargs):

@@ -37,7 +37,10 @@ class Stock(Module):
             try:
                 stock_info = self.lookup_symbol(symbol)
                 # stylize the message output
-                change = float(stock_info['cp'])
+                try:
+                    change = float(stock_info['ecp'])
+                except:
+                    change = float(stock_info['cp'])
                 if change > 0:
                     color = "\x033"
                 elif change < 0:
@@ -45,7 +48,10 @@ class Stock(Module):
                 else:
                     color = ""
                 stock_info['color'] = color
-                message1 = "%(name)s (%(e)s:%(t)s) - %(l)s (%(color)s%(c)s\x0f,%(color)s %(cp)s%%\x0f) - 52week high/low: (%(hi52)s/%(lo52)s) - MktCap: %(mc)s - P/E: %(pe)s" % (stock_info)
+		try:
+                    message1 = "%(name)s (%(e)s:%(t)s) - %(el)s (%(color)s%(ec)s\x0f,%(color)s %(ecp)s%%\x0f) - 52week high/low: (%(hi52)s/%(lo52)s) - MktCap: %(mc)s - P/E: %(pe)s" % (stock_info)
+                except:
+                    message1 = "%(name)s (%(e)s:%(t)s) - %(l)s (%(color)s%(c)s\x0f,%(color)s %(cp)s%%\x0f) - 52week high/low: (%(hi52)s/%(lo52)s) - MktCap: %(mc)s - P/E: %(pe)s" % (stock_info)
                 # send the messages
                 self.msg(event['target'], message1)
             except:

@@ -24,7 +24,8 @@ class Choose(Module):
         self.add_command('c', 'choose')
     
     def choose(self, event):
-        # Make that bitch a one-liner
-        # Bitches love one-liners
-        # - Sentinel, Oct 28 2013
-        self.msg(event['target'], event['nick'] + ": " + choice([item.strip() for item in event['args'].split(",") if item.strip()]))
+        if self.num_args >= 1:
+            # Make that bitch a one-liner
+            # Bitches love one-liners
+            # - Sentinel, Oct 28 2013
+            self.msg(event['target'], event['nick'] + ": " + choice([item.strip() for item in ' '.join(event['args']).split(",") if item.strip()]))

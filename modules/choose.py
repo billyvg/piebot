@@ -10,6 +10,7 @@ By Lucas/Mezmor
 """
 
 from modules import *
+from random import choice
 
 class Choose(Module):
 
@@ -26,4 +27,4 @@ class Choose(Module):
         # Make that bitch a one-liner
         # Bitches love one-liners
         # - Sentinel, Oct 28 2013
-        self.msg(event['target'], random.choice([ item.strip() for item in event['args'].split(",") if item ]))
+        self.msg(event['target'], choice([ item.strip() for item in event['args'].split(",") if item ]))

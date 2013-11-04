@@ -27,3 +27,4 @@ class Choose(Module):
         # Bitches love one-liners
         # - Sentinel, Oct 28 2013
         self.msg(event['target'], random.choice([ item.strip() for item in event['args'].split(",") if item ])
+        

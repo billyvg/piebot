@@ -9,7 +9,7 @@ By Lucas/Mezmor
 
 """
 
-from modules import *
+from modules import Module
 from random import choice
 
 class Choose(Module):

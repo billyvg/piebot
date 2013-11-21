@@ -36,6 +36,6 @@ class Urbandictionary(Module):
                 message = "%(word)s (%(thumbs_up)d/%(thumbs_down)d): %(definition)s (ex: %(example)s)" % (definition)
                 self.msg(event['target'], message[:450])
             except (IndexError, KeyError) as e:
-                self.msg(event['target'], 'Could find word "%s"' % ' '.join(event['args']))
+                self.msg(event['target'], 'Could not find word "%s"' % ' '.join(event['args']))
         else:
             self.syntax_message(event['nick'], '.ud <word>')

@@ -30,11 +30,9 @@ class Isup(Module):
 
             try:
                 r = requests.get(self.url % (domain))
-                if re.search('Is Down ->', r.text):
+                if re.search('looks down from here', r.text):
                     message = "%s is DOWN" % domain
-                elif re.search('interwho', r.text):
-                    message = "%s is INVALID" % domain
-                else:
+                elif re.search('is up.', r.text):
                     message = "%s is UP" % domain
 
                 self.msg(event['target'], message)

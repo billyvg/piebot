@@ -20,7 +20,7 @@ class Bitcoin(Module):
 
         Module.__init__(self, kwargs=kwargs)
 
-        self.url = "http://data.mtgox.com/api/1/BTCUSD/ticker"
+        self.url = "https://data.mtgox.com/api/1/BTCUSD/ticker"
 
     def _register_events(self):
         """Register module commands."""

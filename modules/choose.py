@@ -24,7 +24,7 @@ class Choose(Module):
         self.add_command('c', 'choose')
     
     def choose(self, event):
-        if self.num_args >= 1:
+        if self.num_args >= 2:
             # Make that bitch a one-liner
             # Bitches love one-liners
             # - Sentinel, Oct 28 2013

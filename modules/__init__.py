@@ -125,6 +125,7 @@ class Module:
         self.num_args = event['num_args']
 
         try:
+            self.last_event = event
             call_func = getattr(self, action)
             call_func(event)
         except:
@@ -140,8 +141,8 @@ class Module:
         command = event['command']
 
         try:
-            call_func = getattr(self, self.commands[command])
             self.last_event = event
+            call_func = getattr(self, self.commands[command])
             call_func(event)
         except:
             # print out traceback if something wrong happens in the module
@@ -181,7 +182,7 @@ class Module:
     def _reply(self, msgtype, target, message):
         """Private method to send chat messages."""
 
-        self.server[msgtype](target, message)
+        getattr(self.server, msgtype)(target, message.decode('utf-8'))
 
     def bold(self, message):
         """Helper function to bold a message."""

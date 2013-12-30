@@ -102,12 +102,12 @@ class Chatbot(Module):
         # the size of the chain, e.g. ['what', 'up', 'bro'], ['up', 'bro', '\x02']
         for words in self.split_message(self.sanitize_message(message)):
             # grab everything but the last word
-            print "blah %s" % words
             key = self.separator.join(words[:-1])
 
             # add the last word to the set
             self.db.markov.update({
-                'key': key
+                'key': key,
+                'channel': event['target']
             }, {
                 '$addToSet': {
                     'sequences': words[-1]
@@ -120,7 +120,6 @@ class Chatbot(Module):
                 best_message = ''
                 for i in range(self.messages_to_generate):
                     generated = self.generate_message(seed=key)
-                    print "generated message: %s" % generated
                     if len(generated) > len(best_message) and len(generated) > 2:
                         best_message = generated
 

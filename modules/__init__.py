@@ -3,7 +3,9 @@
 
 Module for our bot's modules.  Contains the base module class.
 """
+import re
 import traceback
+
 from db import db
 
 # define some decorators here, to be used by modules for access control
@@ -153,6 +155,16 @@ class Module:
 
         message = "syntax: %s" % syntax
         self.server.notice(target, message)
+
+    def pinged(self):
+        """Checks if bot was pinged or not."""
+
+        return re.match('^%s[:;,\.\s]' % self.server.get_nickname(), event['message']) is not None
+
+    def fix_ping(self):
+        """Returns the message without the bot's nickname."""
+
+        return re.sub('^%s[:;,\.\s]\s*' % self.server.get_nickname(), '', event['message'])
 
     def notice(self, target, message):
         """Gives modules the ability to send a notice to a user."""

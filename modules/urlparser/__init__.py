@@ -51,6 +51,6 @@ class Urlparser(Module):
                         self.server.privmsg(event['target'], msg.encode('ascii', 'ignore'))
                         break
         except:
-            print "<<Error>> in Urlparser"
+            print "<<Error>> in Urlparser (%s)" % (event['message'])
             print traceback.print_exc()
 

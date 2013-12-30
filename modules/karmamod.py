@@ -24,10 +24,9 @@ class Karmamod(Module):
             'source': event['target']})
         try:
             result = karma['count']
+            self.reply('%s has %d karma.' % (event['args'][0], result))
         except KeyError, TypeError:
             result = 0
-
-        self.msg(event['target'], '%s has %d karma.' % (event['args'][0], result))
 
     def parsekarma(self, event):
         inc_pattern = re.compile('([^ ]{2,})\+\+')

@@ -159,12 +159,12 @@ class Module:
     def pinged(self):
         """Checks if bot was pinged or not."""
 
-        return re.match('^%s[:;,\.\s]' % self.server.get_nickname(), event['message']) is not None
+        return re.match('^%s[:;,\.\s]' % self.server.get_nickname(), self.last_event['message']) is not None
 
     def fix_ping(self):
         """Returns the message without the bot's nickname."""
 
-        return re.sub('^%s[:;,\.\s]\s*' % self.server.get_nickname(), '', event['message'])
+        return re.sub('^%s[:;,\.\s]\s*' % self.server.get_nickname(), '', self.last_event['message'])
 
     def notice(self, target, message):
         """Gives modules the ability to send a notice to a user."""

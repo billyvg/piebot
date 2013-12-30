@@ -30,10 +30,10 @@ class Wikipediamod(Module):
 
             try:
 				page = wikipedia.page(word)
-				self.msg(event['target'], "%s... (%s)" % (page.summary[:390], page.url))
+				self.reply("%s... (%s)" % (page.summary[:390], page.url))
             except:
 				import traceback
 				traceback.print_exc()
-				self.msg(event['target'], 'Could not find entry for "%s"' % ' '.join(event['args']))
+				self.reply_notice('Could not find entry for "%s"' % ' '.join(event['args']))
         else:
 			self.syntax_message(event['nick'], '.wiki <word>')

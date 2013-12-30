@@ -36,7 +36,7 @@ class Search(Module):
             # stylize the message output
             message = "%(titleNoFormatting)s - %(content)s - %(url)s" % (results)
             # send the messages
-            self.msg(event['target'], message.encode('ascii', 'ignore'))
+            self.reply(message)
         except:
             import traceback
             print "Failed to search for %s - %s" % (search_term, results)

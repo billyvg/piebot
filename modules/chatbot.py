@@ -12,7 +12,7 @@ class Chatbot(Module):
     chattiness = 0.01
     max_words = 20
     messages_to_generate = 5
-    separator = '\x01'
+    separator = ' '
     stop_word = '\x02'
 
     def __init__(self, *args, **kwargs):

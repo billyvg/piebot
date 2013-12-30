@@ -109,7 +109,7 @@ class Chatbot(Module):
                 'key': key,
                 'channel': event['target']
             }, {
-                '$addToSet': {
+                '$push': {
                     'sequences': words[-1]
                 }
             }, True)
@@ -120,7 +120,7 @@ class Chatbot(Module):
                 best_message = ''
                 for i in range(self.messages_to_generate):
                     generated = self.generate_message(seed=key)
-                    if len(generated) > len(best_message) and len(generated) > 2:
+                    if len(generated) > len(best_message) and len(generated) > self.chain_length:
                         best_message = generated
 
                 if best_message:

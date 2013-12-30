@@ -141,6 +141,7 @@ class Module:
 
         try:
             call_func = getattr(self, self.commands[command])
+            self.last_event = event
             call_func(event)
         except:
             # print out traceback if something wrong happens in the module
@@ -161,6 +162,26 @@ class Module:
         """Gives modules the ability to send a message to a user/channel."""
 
         self.server.privmsg(target, message)
+
+    def reply(self, message):
+        """Sends a reply (message) to the channel."""
+
+        self._reply('privmsg', self.last_event['target'], message)
+
+    def reply_user(self, message):
+        """Helper function to private message the user that sent the command."""
+
+        self._reply('privmsg', self.last_event['nick'], message)
+
+    def reply_notice(self, message):
+        """Helper function to send a notice to the user that sent the command."""
+
+        self._reply('notice', self.last_event['nick'], message)
+
+    def _reply(self, msgtype, target, message):
+        """Private method to send chat messages."""
+
+        self.server[msgtype](target, message)
 
     def bold(self, message):
         """Helper function to bold a message."""

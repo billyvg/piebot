@@ -30,7 +30,7 @@ class Bitly(object):
 
         try:
             title = self.get_url_title(matched_url)
-			"""
+            """
             try:
                 d = self.youtube_pattern.search(matched_url)
                 if d:
@@ -38,8 +38,8 @@ class Bitly(object):
                 short_url = self.get_short_url(matched_url)
             except:
                 pass
-			"""
-			return ".:. %s" % (title)
+            """
+            return ".:. %s" % (title)
             # need some proper logging =[
         except:
             pass

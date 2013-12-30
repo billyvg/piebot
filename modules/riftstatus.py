@@ -49,10 +49,10 @@ class Riftstatus(Module):
 
             status_message = self.status_messages(status)
             message = "\x02%s\x0f is currently %s with %s" % (status_message["name"], status_message["online"], status_message["queue"])
-            self.msg(event['target'], message)
+            self.reply(message)
         except:
             print traceback.print_exc()
-            self.msg(event['target'], "Server status not available.")
+            self.reply("Server status not available.")
 
     def status_messages(self, status):
         message = {}

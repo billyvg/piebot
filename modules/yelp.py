@@ -45,10 +45,10 @@ class Yelp(Module):
                     }
 
             message = '%(name)s (%(rating).2f w/ %(review_count)d reviews) @ %(address)s, %(city)s - (%(area_code)s) %(phone)s. %(url)s' % result
-            self.msg(event['target'], message.encode('utf-8'))
+            self.reply(message)
         except KeyError:
             print resp
-            self.msg(event['target'], 'Could not find "%s" on Yelp.' % term)
+            self.reply('Could not find "%s" on Yelp.' % term)
         except IndexError:
             print resp
             pass

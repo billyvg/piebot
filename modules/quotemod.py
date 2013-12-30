@@ -41,13 +41,13 @@ class Quotemod(Module):
                 'source': event['target']}
         self.db.quotes.insert(data)
 
-        self.msg(event['target'], 'Quote added.')
+        self.reply('Quote added.')
 
     def delete(self, event):
         """Deletes a quote by id."""
 
         self.db.quotes.remove({'_id': event['args'][0]})
-        self.msg(event['target'], 'Quote deleted.')
+        self.reply('Quote deleted.')
 
     def search(self, event):
         #quotes = Quote().find(' '.join(event['args'][1:-1]))

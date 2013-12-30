@@ -30,7 +30,7 @@ class Notemod(Module):
                     'active': True,
                     'target': event['args'][0].lower()}
             self.db.notes.insert(data)
-            self.notice(event['nick'], 'Note added for %s.' % (event['args'][0]))
+            self.reply_notice('Note added for %s.' % (event['args'][0]))
 
     def parse_message(self, event):
         """ Checks to see if user has notes waiting for them """
@@ -39,7 +39,7 @@ class Notemod(Module):
         if notes.count() > 0:
             for note in notes:
                 rd = relativedelta(datetime.now(), note['time'])
-                self.notice(event['nick'], '%s said to you %s ago: "%s"' % (note['added_by'].split('!')[0], self.pretty_time_duration(rd), note['note'].encode('ascii', 'ignore')))
+                self.reply_notice('%s said to you %s ago: "%s"' % (note['added_by'].split('!')[0], self.pretty_time_duration(rd), note['note'].encode('ascii', 'ignore')))
                 self.db.notes.update({'_id': note['_id']}, {'$set': {'active': False}})
 
     def pretty_time_duration(self, rd):

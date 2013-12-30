@@ -47,7 +47,7 @@ class Rottentomatoes(Module):
                     cast,
                     result['id']
                     )
-            self.msg(event['target'], message)
-            self.msg(event['target'], '[synopsis] %s' % (result['critics_consensus']))
+            self.reply(message)
+            self.reply('[synopsis] %s' % (result['critics_consensus']))
         except IndexError, KeyError:
-            self.msg(event['target'], 'Could not find "%s" on rottentomatoes.com' % term)
+            self.reply('Could not find "%s" on rottentomatoes.com' % term)

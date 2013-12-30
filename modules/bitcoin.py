@@ -38,9 +38,9 @@ class Bitcoin(Module):
             data['last'] = result['last_local']['display_short']
             data['low'] = result['low']['display_short']
             data['volume'] = result['vol']['display_short']
-            
+
             message = "Last: %(last)s - High/Low: (%(high)s/%(low)s) - Volume: %(volume)s" % (data)
-            self.msg(event['target'], message)
+            self.reply(message)
 
         except:
             pass

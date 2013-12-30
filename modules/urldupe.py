@@ -74,7 +74,7 @@ class Urldupe(Module):
                         dupes[0]['username'],
                         self.pretty_time_duration(rd)
                         )
-                self.msg(event['target'], message)
+                self.reply(message)
             elif dupes.count() > 1:
                 rd = relativedelta(datetime.now(), dupes[0]['time'])
                 message = ("%s: That url has been linked %d times already"
@@ -84,7 +84,7 @@ class Urldupe(Module):
                         dupes[0]['username'],
                         self.pretty_time_duration(rd)
                         )
-                self.msg(event['target'], message)
+                self.reply(message)
 
             # add to database
             self.save_url(match, event['nick'], event['target'])

@@ -53,9 +53,9 @@ class Stock(Module):
                 except:
                     message1 = "%(name)s (%(e)s:%(t)s) - %(l)s (%(color)s%(c)s\x0f,%(color)s %(cp)s%%\x0f) - 52week high/low: (%(hi52)s/%(lo52)s) - MktCap: %(mc)s - P/E: %(pe)s" % (stock_info)
                 # send the messages
-                self.msg(event['target'], message1)
+                self.reply(message1)
             except:
-                self.msg(event['target'], 'Could not find symbol "%s"' % symbol)
+                self.reply('Could not find symbol "%s"' % symbol)
                 import traceback
                 traceback.print_exc()
         else:

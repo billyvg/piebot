@@ -46,7 +46,7 @@ class Weather(Module):
                 weather = self.get_weather(zipcode)
 
                 try:
-                    self.notice(event['nick'], '%s (%s)' % (weather['error_msg'], zipcode))
+                    self.reply_notice('%s (%s)' % (weather['error_msg'], zipcode))
                 except KeyError:
                     # stylize the message output
                     try:
@@ -57,7 +57,7 @@ class Weather(Module):
                     #message2 = "Today (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][0]
                     #message3 = "Tomorrow (%(day)s) - High: %(high)sF, Low: %(low)sF - %(condition)s" % weather['forecast'][1]
                     # send the messages
-                    self.msg(event['target'], message1)
+                    self.reply(message1)
                     #self.msg(event['target'], message2)
                     #self.msg(event['target'], message3)
             except:

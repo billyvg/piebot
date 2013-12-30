@@ -28,4 +28,4 @@ class Choose(Module):
             # Make that bitch a one-liner
             # Bitches love one-liners
             # - Sentinel, Oct 28 2013
-            self.msg(event['target'], event['nick'] + ": " + choice([item.strip() for item in ' '.join(event['args']).split(",") if item.strip()]))
+            self.reply(event['nick'] + ": " + choice([item.strip() for item in ' '.join(event['args']).split(",") if item.strip()]))

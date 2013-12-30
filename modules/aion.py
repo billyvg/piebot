@@ -52,10 +52,10 @@ class Aion(Module):
 
             short_url = "http://zikel.org/c/%s" % name
             message = '"%s" %s <%s>, a level %d %s %s (%s / %d AP / %d kills). %s' % (character['title'], character['name'], character['legion'], character['level'], character['race'], character['class'], character['pvprank'], character['ap'], character['kills'], short_url)
-            self.msg(event['target'], message)
+            self.reply(message)
         #print message
         except:
-            self.msg(event['target'], "Character not found: %s" % name)
+            self.reply("Character not found: %s" % name)
 
 
 class CharacterParserRegex:

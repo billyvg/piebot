@@ -35,10 +35,10 @@ class Isup(Module):
                 elif re.search('is up.', r.text):
                     message = "%s is UP" % domain
 
-                self.msg(event['target'], message)
+                self.reply(message)
             except:
                 import traceback
                 traceback.print_exc()
-                self.msg(event['target'], 'Problem looking up "%s"' % domain)
+                self.reply('Problem looking up "%s"' % domain)
         else:
             pass

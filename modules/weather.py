@@ -42,12 +42,12 @@ class Weather(Module):
             # need to fetch the weather and parse it
             zipcode = ' '.join(event['args'])
 
-            m = re.search('\+\+|\-\-', zipcode)
-            if m:
-                self.msg(event['target'], 'Could not get weather data for "%s--"' % event['nick'])
-            else:
+            try:
+                weather = self.get_weather(zipcode)
+
                 try:
-                    weather = self.get_weather(zipcode)
+                    self.notice(event['nick'], '%s (%s)' % (weather['error_msg'], zipcode))
+                except KeyError:
                     # stylize the message output
                     try:
                         message1 = "%(city)s (%(zipcode)s) - %(condition)s @ %(temp_f)sF (%(temp_c)sC) - Humidity: %(humidity)s, Winds: %(wind)s" % (weather)
@@ -60,10 +60,9 @@ class Weather(Module):
                     self.msg(event['target'], message1)
                     #self.msg(event['target'], message2)
                     #self.msg(event['target'], message3)
-                except:
-                    import traceback
-                    traceback.print_exc()
-                    self.msg(event['target'], 'Could not get weather data for "%s"' % zipcode)
+            except:
+                print 'Could not get weather data for "%s"' % zipcode
+                self.notice(event['nick'], 'Could not get weather data for "%s"' % zipcode)
         else:
             self.syntax_message(event['nick'], '.w <zipcode>')
 
@@ -74,18 +73,23 @@ class Weather(Module):
         data = {}
         r = requests.get(self.__class__.API_URL % (self.api_key, zipcode.replace(' ', '_')))
         resp = json.loads(r.text)
+
         try:
-            obs = resp['current_observation']
-
-            data['city'] = obs['display_location']['full']
-            data['zipcode'] = obs['display_location']['zip']
-            data['temp_f'] = obs['temp_f']
-            data['temp_c'] = obs['temp_c']
-            data['condition'] = obs['weather']
-            data['humidity'] = obs['relative_humidity']
-            data['wind'] = obs['wind_string']
-
+            data['error'] = resp['response']['error']['type']
+            data['error_msg'] = resp['response']['error']['description']
             return data
         except KeyError:
-            print 'no current_obs'
-            print resp
+            try:
+                obs = resp['current_observation']
+
+                data['city'] = obs['display_location']['full']
+                data['zipcode'] = obs['display_location']['zip']
+                data['temp_f'] = obs['temp_f']
+                data['temp_c'] = obs['temp_c']
+                data['condition'] = obs['weather']
+                data['humidity'] = obs['relative_humidity']
+                data['wind'] = obs['wind_string']
+                return data
+            except KeyError:
+                print 'no current_obs'
+                print resp

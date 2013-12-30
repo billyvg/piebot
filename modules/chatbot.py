@@ -70,11 +70,11 @@ class Chatbot(Module):
                 'key': key
             })
 
-            if not next_word or len(next_word.sequences) < 1:
+            if not next_word or len(next_word['sequences']) < 1:
                 break
 
             # create a new key combining the end of the old one and the next_word
-            key = self.separator.join(words[1:] + [random.choose(next_word.sequences)])
+            key = self.separator.join(words[1:] + [random.choice(next_word['sequences'])])
 
         return ' '.join(gen_words)
 
@@ -87,27 +87,32 @@ class Chatbot(Module):
 
         """
 
+        say_something = False
         message = event['message']
         messages = []
 
+        if message.startswith('.'):
+            return
+
         if self.pinged():
             say_something = True
-            message = self.fix_ping(message)
+            message = self.fix_ping()
 
         # split up the incoming message into chunks that are 1 word longer than
         # the size of the chain, e.g. ['what', 'up', 'bro'], ['up', 'bro', '\x02']
         for words in self.split_message(self.sanitize_message(message)):
             # grab everything but the last word
+            print "blah %s" % words
             key = self.separator.join(words[:-1])
 
             # add the last word to the set
             self.db.markov.update({
                 'key': key
             }, {
-                '$push': {
+                '$addToSet': {
                     'sequences': words[-1]
                 }
-            })
+            }, True)
 
                 # if we should say something, generate some messages based on what
             # was just said and select the longest, then add it to the list
@@ -115,7 +120,8 @@ class Chatbot(Module):
                 best_message = ''
                 for i in range(self.messages_to_generate):
                     generated = self.generate_message(seed=key)
-                    if len(generated) > len(best_message):
+                    print "generated message: %s" % generated
+                    if len(generated) > len(best_message) and len(generated) > 2:
                         best_message = generated
 
                 if best_message:

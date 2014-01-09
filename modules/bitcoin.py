@@ -1,15 +1,12 @@
 """Bitccoin ticker module for ppbot.
 @package ppbot
 
-Displays the current bitcoin pricing from mtgox
+Displays the current bitcoin pricing from several exchanges via bitcoincharts
 
 @syntax btc
 
 """
 import requests
-import string
-import json
-from xml.dom.minidom import parseString
 
 from modules import *
 
@@ -20,7 +17,8 @@ class Bitcoin(Module):
 
         Module.__init__(self, kwargs=kwargs)
 
-        self.url = "https://data.mtgox.com/api/1/BTCUSD/ticker"
+        self.tracked = ['mtgoxUSD', 'btceUSD', 'bitstampUSD']
+        self.url = 'http://api.bitcoincharts.com/v1/markets.json'
 
     def _register_events(self):
         """Register module commands."""
@@ -33,21 +31,24 @@ class Bitcoin(Module):
         data = {}
 
         try:
-            result = self.lookup()['return']
-            data['high'] = result['high']['display_short']
-            data['last'] = result['last_local']['display_short']
-            data['low'] = result['low']['display_short']
-            data['volume'] = result['vol']['display_short']
+            data = self.lookup()
+            relevant = [d for d in data if d.get('symbol') in self.tracked]
+            output = ""
+            for exchange in relevant:
+                output += "%s last: %d, vol: %0.2f, high: %d, low: %d | " % (
+                        exchange.get('symbol'),
+                        exchange.get('bid'),
+                        exchange.get('volume'),
+                        exchange.get('high'),
+                        exchange.get('low'))
 
-            message = "Last: %(last)s - High/Low: (%(high)s/%(low)s) - Volume: %(volume)s" % (data)
-            self.reply(message)
+                self.reply(output[:-3])
 
         except:
             pass
-        
-    def lookup(self):
-        """Connects to google's secret finance API and parses the receiving json for the stock info."""
 
-        # make the parser, and send the xml to be parsed
+    def lookup(self):
+        """Connects to API and parses the receiving json for the stock info."""
+
         result = requests.get(self.url)
         return result.json()

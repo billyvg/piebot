@@ -8,7 +8,6 @@ setup(
     packages=['piebot',],
     license='LICENSE.txt',
     description='A python IRC bot with an easy plugin API.',
-    long_description=open('README.txt').read(),
     install_requires=[
         "irc >= 8.1.1",
         "Flask == 0.9",

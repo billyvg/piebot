@@ -1,7 +1,6 @@
-====
-Contributing
-====
+# Contributing
 
+```
     vagrant up
     vagrant ssh
     virtualenv env
@@ -9,8 +8,11 @@ Contributing
     python setup.py develop
     cp settings.py.default settings.py
     cp bootstrap.py.default bootstrap.py
+```
 
 Edit settings.py and bootstrap.py
 
+```
     python bootstrap.py
     python bin/bot.py
+```

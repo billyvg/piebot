@@ -29,5 +29,6 @@ setup(
         "gdata == 2.0.17",
         "wikipedia >= 0.9.8",
         "python-yelp >= 0.1.1",
+        "beautifulsoup4 == 4.3.2",
     ],
 )

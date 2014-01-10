@@ -2,7 +2,7 @@ DEBUG = False
 HTTP_PORT = 8088
 
 # MongoDB settings
-MONGO_DB = 'ppbot'
+MONGO_DB = 'piebot'
 MONGO_PASSWORD = ''
 MONGO_HOST = 'localhost'
 MONGO_PORT = 27017

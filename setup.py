@@ -1,0 +1,33 @@
+from distutils.core import setup
+
+setup(
+    name='piebot',
+    version='0.1.0',
+    author='Billy Vong',
+    author_email='pypi@mmo.me',
+    packages=['piebot',],
+    license='LICENSE.txt',
+    description='A python IRC bot with an easy plugin API.',
+    long_description=open('README.txt').read(),
+    install_requires=[
+        "irc >= 8.1.1",
+        "Flask == 0.9",
+        "Jinja2 == 2.6",
+        "Unidecode == 0.04.12",
+        "Werkzeug == 0.8.3",
+        "argparse == 1.2.1",
+        "gevent == 0.13.8",
+        "greenlet == 0.4.0",
+        "wsgiref == 0.1.2",
+        "httplib2 == 0.8",
+        "pymongo == 2.5",
+        "python-dateutil == 2.1",
+        "envoy == 0.0.2",
+        "requests == 1.2.0",
+        "oauth2 == 1.5.211",
+        "six == 1.3.0",
+        "gdata == 2.0.17",
+        "wikipedia >= 0.9.8",
+        "python-yelp >= 0.1.1",
+    ],
+)

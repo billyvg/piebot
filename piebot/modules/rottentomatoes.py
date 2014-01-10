@@ -9,8 +9,8 @@ import urllib
 import requests
 import json
 
-import settings
-from modules import *
+from piebot import settings
+from piebot.modules import *
 
 class Rottentomatoes(Module):
     API_URL = 'http://api.rottentomatoes.com/api/public/v1.0/movies.json?%s'

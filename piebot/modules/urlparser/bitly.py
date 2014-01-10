@@ -9,7 +9,7 @@ except ImportError:
     import json
 from unidecode import unidecode
 
-import settings
+from piebot import settings
 
 class Bitly(object):
     """Checks incoming messages for possible urls.  If a url is found then

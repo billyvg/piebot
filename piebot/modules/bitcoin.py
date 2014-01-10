@@ -8,7 +8,7 @@ Displays the current bitcoin pricing from several exchanges via bitcoincharts
 """
 import requests
 
-from modules import *
+from piebot.modules import *
 
 class Bitcoin(Module):
 

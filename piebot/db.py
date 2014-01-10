@@ -6,7 +6,7 @@ Adds a wrapper to pymongo.
 """
 from pymongo import mongo_client
 
-from settings import *
+from piebot.settings import *
 
 client = mongo_client.MongoClient(MONGO_HOST, MONGO_PORT)
 db = client[MONGO_DB]

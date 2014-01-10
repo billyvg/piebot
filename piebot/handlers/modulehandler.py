@@ -6,7 +6,7 @@
 import traceback
 import sys
 
-from handlers import Handler
+from piebot.handlers import Handler
 
 
 class ModuleHandler(Handler):
@@ -38,7 +38,7 @@ class ModuleHandler(Handler):
         if not class_name:
             class_name = name
         # create a string in the form of "modules.<module name>.<class name>"
-        structured_name = 'modules.' + name.lower() + '.' + class_name
+        structured_name = 'piebot.modules.' + name.lower() + '.' + class_name
         # split the structured name into different components
         component_names = structured_name.split('.')
         try:

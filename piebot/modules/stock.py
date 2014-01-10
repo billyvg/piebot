@@ -12,7 +12,7 @@ import string
 import json
 from xml.dom.minidom import parseString
 
-from modules import *
+from piebot.modules import *
 
 class Stock(Module):
 

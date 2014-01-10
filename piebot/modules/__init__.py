@@ -6,7 +6,7 @@ Module for our bot's modules.  Contains the base module class.
 import re
 import traceback
 
-from db import db
+from piebot.db import db
 
 # define some decorators here, to be used by modules for access control
 def access(*a, **kw):

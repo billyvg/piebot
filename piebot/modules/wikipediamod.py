@@ -7,7 +7,7 @@
 import requests
 import json
 
-from modules import *
+from piebot.modules import *
 
 import wikipedia
 

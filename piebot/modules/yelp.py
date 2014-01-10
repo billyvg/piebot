@@ -10,8 +10,8 @@ import requests
 import oauth2 as oauth
 
 
-import settings
-from modules import *
+from piebot import settings
+from piebot.modules import *
 
 class Yelp(Module):
     API_URL = 'http://api.yelp.com/v2/search'

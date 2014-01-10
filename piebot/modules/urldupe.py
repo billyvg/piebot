@@ -7,8 +7,8 @@ import time
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-from modules import *
-from db import db
+from piebot.modules import *
+from piebot.db import db
 
 class Urldupe(Module):
     youtube_pattern = re.compile('(?:youtube.com/watch).*?v=([a-zA-Z0-9]+)')

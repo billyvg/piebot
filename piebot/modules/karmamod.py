@@ -5,7 +5,7 @@
 """
 import re
 
-from modules import *
+from piebot.modules import *
 
 class Karmamod(Module):
 

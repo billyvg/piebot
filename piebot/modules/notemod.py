@@ -7,7 +7,7 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-from modules import *
+from piebot.modules import *
 
 class Notemod(Module):
 

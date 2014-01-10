@@ -2,7 +2,7 @@ import sys, threading, Queue, signal, os, string, random, time
 import urllib2, StringIO, re
 from xml.dom.minidom import parseString
 
-from modules import *
+from piebot.modules import *
 
 
 class Riftstatus(Module):

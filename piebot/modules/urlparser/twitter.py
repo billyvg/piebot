@@ -5,7 +5,7 @@ import requests
 import oauth2 as oauth
 from HTMLParser import HTMLParser
 
-import settings
+from piebot import settings
 
 class Twitter(object):
     """Checks incoming messages for Twitter urls and calls the Twitter API to

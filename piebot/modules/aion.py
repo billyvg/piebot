@@ -3,7 +3,7 @@ import urllib2, StringIO, re
 #import pycurl
 #import sgmllib
 
-from modules import *
+from piebot.modules import *
 
 
 # define some CURL options

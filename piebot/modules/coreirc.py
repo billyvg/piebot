@@ -1,4 +1,4 @@
-from modules import *
+from piebot.modules import *
 
 
 class Coreirc(Module):

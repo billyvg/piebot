@@ -9,7 +9,7 @@ Returns the first google search result
 import requests
 import json
 
-from modules import *
+from piebot.modules import *
 
 class Search(Module):
 

@@ -4,7 +4,7 @@
 @syntax isup <word>
 
 """
-from modules import *
+from piebot.modules import *
 from flask import request
 import envoy
 

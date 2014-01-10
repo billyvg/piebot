@@ -7,7 +7,7 @@
 import requests
 import re
 
-from modules import *
+from piebot.modules import *
 
 class Isup(Module):
 

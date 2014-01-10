@@ -1,4 +1,4 @@
-from db import db
+from piebot.db import db
 
 if db.configuration.find().count() == 0:
     data = [{'key': 'network',

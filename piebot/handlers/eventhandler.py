@@ -20,8 +20,8 @@ protocol_events = [
 ]
 """
 
-from db import db
-from handlers import Handler
+from piebot.db import db
+from piebot.handlers import Handler
 
 trigger = db.configuration.find_one({'key': 'trigger'})['value']
 

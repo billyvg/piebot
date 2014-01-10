@@ -5,7 +5,7 @@ Inspired from https://github.com/coleifer/irc/blob/master/bots/redisbot.py
 import re
 import random
 
-from modules import *
+from piebot.modules import *
 
 class Chatbot(Module):
     chain_length = 2

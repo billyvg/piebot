@@ -14,8 +14,8 @@ import json
 
 import requests
 
-import settings
-from modules import *
+from piebot import settings
+from piebot.modules import *
 
 
 class Weather(Module):

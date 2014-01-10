@@ -9,7 +9,7 @@ By Lucas/Mezmor
 
 """
 
-from modules import Module
+from piebot.modules import *
 from random import choice
 
 class Choose(Module):

@@ -8,16 +8,16 @@ if db.configuration.find().count() == 0:
             'value': '6667',
             'description': 'The port of the IRC server.'},
             {'key': 'nickname',
-            'value': 'ppbot',
+            'value': 'piebot',
             'description': 'The nickname that the bot should use.'},
             {'key': 'password',
             'value': '',
             'description': 'The password for a server if necessary'},
             {'key': 'alt_nickname',
-            'value': 'ppbot_',
+            'value': 'piebot_',
             'description': 'An alternate nickname the bot should use if the primary is in use.'},
             {'key': 'realname',
-            'value': 'Powered by billy',
+            'value': 'I like pie',
             'description': 'The "real name" field displayed on /whois.'},
             {'key': 'me',
             'value': 'billy',
@@ -46,27 +46,25 @@ if db.access_levels.find().count() == 0:
     db.access_levels.insert(data)
 
 if db.networks.find().count() == 0:
-    data = [{'name': 'gamesurge'},
-            {'name': 'freenode'}]
+    data = [
+        {'name': 'localhost'},
+    ]
     db.networks.insert(data)
 
 if db.servers.find().count() == 0:
-    data = [{'network': 'gamesurge',
-            'address': 'irc.gamesurge.net',
-            'port': 6667,
-            'nickname': 'ppbot',
-            'alt_nickname': 'ppbot'},
-            {'network': 'freenode',
-            'address': 'irc.freenode.org',
-            'port': 6667,
-            'nickname': 'ppbot',
-            'alt_nickname': 'ppbot'}]
+    data = [
+        {'network': 'localhost',
+        'address': 'localhost',
+        'port': 6667,
+        'nickname': 'piebot',
+        'alt_nickname': 'piebot'},
+    ]
     db.servers.insert(data)
 
 if db.channels.find().count() == 0:
-    data = [{'network': 'gamesurge',
-            'name': '#channel'},
-            {'network': 'freenode',
-                'name': '##channel'}]
+    data = [
+        {'network': 'localhost',
+        'name': '#development'},
+    ]
 
 

@@ -1,9 +1,4 @@
-"""piebot.py
-
-A modular python bot
-
-TODO: Lots
-"""
+#!/usr/bin/python
 
 from optparse import OptionParser
 

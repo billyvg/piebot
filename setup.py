@@ -5,6 +5,7 @@ setup(
     version='0.1.0',
     author='Billy Vong',
     author_email='pypi@mmo.me',
+    url='https://github.com/billyvg/piebot',
     packages=['piebot',],
     license='LICENSE.txt',
     description='A python IRC bot with an easy plugin API.',

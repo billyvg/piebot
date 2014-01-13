@@ -17,7 +17,7 @@ class Bitcoin(Module):
 
         Module.__init__(self, kwargs=kwargs)
 
-        self.tracked = ['mtgoxUSD', 'btceUSD', 'bitstampUSD']
+        self.tracked = ['btceUSD', 'bitstampUSD']
         self.url = 'http://api.bitcoincharts.com/v1/markets.json'
 
     def _register_events(self):
@@ -35,14 +35,14 @@ class Bitcoin(Module):
             relevant = [d for d in data if d.get('symbol') in self.tracked]
             output = ""
             for exchange in relevant:
-                output += "%s last: %d, vol: %0.2f, high: %d, low: %d | " % (
+                output += "[%s] last: \x02%d\x02 (%d/%d), vol: %0.2f | " % (
                         exchange.get('symbol'),
                         exchange.get('bid'),
-                        exchange.get('volume'),
                         exchange.get('high'),
-                        exchange.get('low'))
+                        exchange.get('low'),
+                        exchange.get('volume'))
 
-                self.reply(output[:-3])
+            self.reply(output[:-3])
 
         except:
             pass

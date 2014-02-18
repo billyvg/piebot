@@ -11,7 +11,7 @@ from piebot.modules import *
 from piebot.db import db
 
 class Urldupe(Module):
-    youtube_pattern = re.compile('(?:youtube.com/watch).*?v=([a-zA-Z0-9]+)')
+    youtube_pattern = re.compile('(?:youtube.com/watch).*?v=([a-zA-Z0-9_-]+)')
     url_pattern = re.compile('http(?:s|)://[^ #]+')
 
     def __init__(self, *args, **kwargs):

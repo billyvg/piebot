@@ -29,8 +29,10 @@ class Wikipediamod(Module):
             word = ' '.join(event['args'])
 
             try:
-				page = wikipedia.page(word)
-				self.reply("%s... (%s)" % (page.summary[:390], page.url))
+                page = wikipedia.page(word)
+                self.reply("%s... (%s)" % (page.summary[:390], page.url))
+            except wikipedia.DisambiguationError as error:
+                self.reply("%s" % error)
             except:
 				import traceback
 				traceback.print_exc()

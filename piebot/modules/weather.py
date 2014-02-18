@@ -91,5 +91,4 @@ class Weather(Module):
                 data['wind'] = obs['wind_string']
                 return data
             except KeyError:
-                print 'no current_obs'
-                print resp
+                pass

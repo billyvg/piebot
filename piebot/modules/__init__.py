@@ -194,7 +194,11 @@ class Module:
     def _reply(self, msgtype, target, message):
         """Private method to send chat messages."""
 
-        getattr(self.server, msgtype)(target, message.replace("\r", " | ").replace("\n", " | ").decode('utf-8'))
+        try:
+            getattr(self.server, msgtype)(target, message.replace("\r", " | ").replace("\n", " | ").decode('utf-8'))
+        except:
+            print "Could not send message: %s" % message
+
 
     def bold(self, message):
         """Helper function to bold a message."""

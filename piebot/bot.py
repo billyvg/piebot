@@ -6,8 +6,12 @@ TODO: Lots
 """
 
 import traceback
+import logging
 
 import irc.client
+import irc.buffer
+import irc.logging
+
 import gevent
 from gevent import monkey; monkey.patch_all()
 from gevent import wsgi
@@ -23,7 +27,7 @@ from piebot import settings
 
 class Bot(object):
 
-    def __init__ (self):
+    def __init__ (self, cli_args):
         """Create an IRC object and do some initializations.
         Need to set handlers for events that may occur so that modules will be able to
         use them.
@@ -31,7 +35,10 @@ class Bot(object):
         """
         self.ircloop_timeout = 0.5
 
+        irc.logging.setup(cli_args)
         self.irc = irc.client.IRC()
+        irc.client.ServerConnection.buffer_class = irc.buffer.LenientDecodingLineBuffer
+
         self.servers = []
 
         # initialize the module handler

@@ -24,7 +24,7 @@ setup(
         "pymongo == 2.5",
         "python-dateutil == 2.1",
         "envoy == 0.0.2",
-        "requests == 1.2.0",
+        "requests >= 1.2.0",
         "oauth2 == 1.5.211",
         "six == 1.3.0",
         "gdata == 2.0.17",

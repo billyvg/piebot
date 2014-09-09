@@ -1,18 +1,17 @@
 #!/usr/bin/python
 
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 from piebot.bot import Bot
+import irc.logging
 
-import piebot.bot
+#import piebot.bot
 if __name__ == "__main__":
-    parser = OptionParser()
-    #parser.add_option('-i', '--init-db', dest='initdb', action='store_true',
-                        #help='Initialize the database.')
-    # parser.add_option('-c', '--config', dest='config_file', action='store',
-    #                     type='string', default='ppbot.cfg', help='Initialize the database.')
+    parser = ArgumentParser(
+        description="Start piebot"
+    )
+    irc.logging.add_arguments(parser)
+    irc.logging.setup(parser.parse_args())
 
-    (options, args) = parser.parse_args()
-
-    bot = Bot()
+    bot = Bot(parser.parse_args())
     bot.start()

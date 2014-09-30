@@ -46,7 +46,7 @@ class Stock(Module):
             self.syntax_message(event['nick'], '.stock <symbol>')
 
     def parse_message(self, event):
-        match = re.search('\$([a-zA-Z]{2,10})', event['message'])
+        match = re.search('\$([a-zA-Z]{1,10})', event['message'])
 
         if match:
             try:
